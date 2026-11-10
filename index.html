@@ -455,8 +455,10 @@
 
   <!-- VICTIME -->
   <div class="screen" id="screen-victim">
+    <div class="lot-header"><span>GOLFIGHT</span><span>CHOISIR LA CIBLE</span></div>
     <div class="hole-badge" id="hole-badge-victim">Trou 1 / 9</div>
-    <h2>Pour qui ?</h2>
+    <p class="target-context" id="victim-attacker"></p>
+    <h2>Qui va trinquer ?</h2>
     <div class="victim-list" id="victim-list"></div>
     <div class="spacer"></div>
     <button class="btn-link" onclick="backToHand()">Retour</button>
@@ -478,26 +480,27 @@
     <div class="attack-actions"><button class="btn" onclick="confirmPlay()">OK<span aria-hidden="true"><svg class="pilot-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></span></button><p>C’est dit. À vous de jouer.</p></div>
   </div>
 
-  <!-- CARTE JOUÉE (chaos) -->
+  <!-- Annonce partagée : chaos ou bonus, même reprise et confirmation. -->
   <div class="screen" id="screen-played">
-    <div class="spacer"></div>
+    <div class="attack-masthead"><span>GOLFIGHT</span><span>À VOUS DE JOUER</span></div>
     <div class="trap-announce" id="played-announce"></div>
     <div class="trap-card-wrap">
       <div class="reveal-face" id="played-card-face">
-        <div class="trap-card-cat" id="played-card-cat"></div>
+        <div class="attack-topline"><div class="trap-card-cat" id="played-card-cat"></div><span aria-hidden="true">✦</span></div>
+        <div class="attack-emblem" aria-hidden="true"><svg viewBox="0 0 100 100" fill="currentColor" focusable="false"><path d="M57 8 18 57h28l-5 35 41-54H54z"/></svg></div>
         <p class="trap-card" id="played-card-name"></p>
-        <p class="trap-effect" id="played-card-effect"></p>
+        <div class="attack-rule"><span class="effect-label">L’EFFET</span><p class="trap-effect" id="played-card-effect"></p></div>
+        <div class="attack-card-footer" aria-hidden="true"><span>GOLFIGHT</span><span>✦</span></div>
       </div>
     </div>
-    <div class="spacer"></div>
-    <button class="btn" onclick="confirmPlay()">OK</button>
+    <div class="attack-actions"><button class="btn" onclick="confirmPlay()">OK</button><p>C’est dit. À vous de jouer.</p></div>
   </div>
 
-  <!-- FIN PARTIE -->
   <div class="screen" id="screen-end">
+    <div class="lot-header"><span>GOLFIGHT</span><span>ON REMET ÇA ?</span></div>
     <div class="spacer"></div>
-    <div class="brand-compact" style="text-align:center;font-size:32px;">Partie<br>terminée</div>
-    <p class="end-slogan">Golfight, c'est fini pour aujourd'hui.</p>
+    <h2 class="end-title">PARTIE<br>TERMINÉE.</h2>
+    <p class="end-slogan">Les cartes sont rangées.<br>Pas les dossiers.</p>
     <div class="spacer"></div>
     <button class="btn" onclick="location.reload()">🔥 REJOUER</button>
   </div>
@@ -940,6 +943,7 @@ function chooseCard(cardIndex) {
       btn.onclick = () => resolvePlay(j);
       list.appendChild(btn);
     });
+    document.getElementById('victim-attacker').textContent = `${state.players[i]} joue « ${card.n} »`;
     document.getElementById('hole-badge-victim').textContent = `Trou ${state.hole} / ${totalHoles()}`;
     show('screen-victim');
   } else {

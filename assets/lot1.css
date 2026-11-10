@@ -1,21 +1,21 @@
 /* Lot 1 only. No target picker, played announcement or end-screen styling. */
-:is(#screen-players,#screen-hub,#screen-pass,#screen-hand) {
+:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end) {
   --lot-bg:#111014; --lot-text:#F5F2E4; --lot-pink:#FF2994;
   --lot-border:#554b58; --lot-muted:#c4bec6;
   color:var(--lot-text); gap:0;
 }
-body:has(:is(#screen-players,#screen-hub,#screen-pass,#screen-hand).active) { background:#111014; }
+body:has(:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end).active) { background:#111014; }
 .lot-header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 0 12px; margin-bottom:18px; border-bottom:1px solid var(--lot-border); flex-shrink:0; }
 .lot-header span:first-child { font-family:'Barlow Condensed',Impact,sans-serif; font-size:24px; font-weight:800; letter-spacing:-.3px; }
 .lot-header span:last-child { font-size:10px; font-weight:800; letter-spacing:1px; text-align:right; color:var(--lot-muted); }
-:is(#screen-players,#screen-hand) h2 { font-family:'Barlow Condensed',Impact,sans-serif; text-align:left; text-transform:uppercase; font-size:32px; line-height:1.05; margin-bottom:16px; overflow-wrap:anywhere; }
-:is(#screen-players,#screen-hub,#screen-pass,#screen-hand) .btn {
+:is(#screen-players,#screen-hand,#screen-victim) h2 { font-family:'Barlow Condensed',Impact,sans-serif; text-align:left; text-transform:uppercase; font-size:32px; line-height:1.05; margin-bottom:16px; overflow-wrap:anywhere; }
+:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end) .btn {
   background:var(--lot-pink); color:#111014; min-height:60px;
   border-radius:6px; padding:16px 18px; font-size:18px;
   box-shadow:3px 3px 0 var(--lot-text); width:calc(100% - 3px);
 }
-:is(#screen-players,#screen-hub,#screen-pass,#screen-hand) .btn:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--lot-text); background:#ff64b0; }
-:is(#screen-players,#screen-hub,#screen-pass,#screen-hand) .btn-link { color:var(--lot-text); min-height:48px; font-size:14px; }
+:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end) .btn:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--lot-text); background:#ff64b0; }
+:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end) .btn-link { color:var(--lot-text); min-height:48px; font-size:14px; }
 #screen-players .roster-row { min-height:58px; padding:13px 14px; border:1px solid var(--lot-border); border-radius:6px; background:#1b191f; margin-bottom:8px; font-size:18px; }
 #screen-players .roster-row.checked { background:#372030; border:2px solid var(--lot-pink); padding:12px 13px; }
 #screen-players .roster-check { color:var(--lot-pink); flex-shrink:0; }
@@ -61,3 +61,13 @@ body:has(:is(#screen-players,#screen-hub,#screen-pass,#screen-hand).active) { ba
   #screen-hand .hand-big-card .n { font-size:26px; }
 }
 #screen-players, #screen-hand { scroll-padding-bottom:84px; }
+
+/* Remaining navigation screens reuse the same header, actions and palette. */
+#screen-victim .hole-badge { text-align:left; opacity:1; color:var(--lot-muted); }
+.target-context { color:var(--lot-muted); font-size:16px; line-height:1.45; margin-bottom:16px; overflow-wrap:anywhere; }
+#screen-victim .victim-list { gap:10px; }
+#screen-victim .victim-btn { min-height:60px; background:#1b191f; border:1px solid var(--lot-border); border-radius:6px; text-align:left; font-size:21px; padding:18px; overflow-wrap:anywhere; }
+#screen-victim .victim-btn:active { background:#372030; border-color:var(--lot-pink); }
+#screen-victim .btn-link { margin-top:20px; }
+#screen-end .end-title { font-family:'Barlow Condensed',Impact,sans-serif; font-size:clamp(36px,12vw,52px); text-align:left; line-height:1; margin-bottom:20px; }
+#screen-end .end-slogan { text-align:left; font-size:18px; font-style:normal; line-height:1.5; opacity:1; color:var(--lot-muted); }
