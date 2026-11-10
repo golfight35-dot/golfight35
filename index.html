@@ -372,6 +372,7 @@
   .storage-warning.hidden { display: none; }
 </style>
 <link rel="stylesheet" href="assets/visual-pilot.css">
+<link rel="stylesheet" href="assets/lot1.css">
 </head>
 <body>
 <div id="app">
@@ -403,6 +404,7 @@
 
   <!-- JOUEURS -->
   <div class="screen" id="screen-players">
+    <div class="lot-header"><span>GOLFIGHT</span><span>LA TEAM</span></div>
     <h2>Qui joue aujourd'hui ?</h2>
     <div id="roster-list"></div>
     <div class="add-nick-row">
@@ -419,6 +421,7 @@
 
   <!-- ÉCRAN CENTRAL — TROU X / 9 -->
   <div class="screen" id="screen-hub">
+    <div class="lot-header"><span>GOLFIGHT</span><span>SUR LE PARCOURS</span></div>
     <div id="hole-badge-hub">Trou 1 / 9</div>
     <div id="players-list"></div>
     <div class="hole-actions">
@@ -429,6 +432,7 @@
 
   <!-- PASS -->
   <div class="screen" id="screen-pass">
+    <div class="lot-header"><span>GOLFIGHT</span><span>MAIN PRIVÉE</span></div>
     <div class="spacer"></div>
     <p style="text-align:center;font-size:14px;opacity:0.7;letter-spacing:1px;">PASSE LE TÉLÉPHONE À</p>
     <p class="pass-name" id="pass-name">—</p>
@@ -440,6 +444,7 @@
 
   <!-- MAIN PRIVÉE -->
   <div class="screen" id="screen-hand">
+    <div class="lot-header"><span>GOLFIGHT</span><span>MAIN PRIVÉE</span></div>
     <div class="hole-badge" id="hole-badge-hand">Trou 1 / 9</div>
     <h2 id="hand-title">Ta main</h2>
     <div id="hand-area"></div>
@@ -702,9 +707,11 @@ function renderRosterScreen() {
     `;
     row.setAttribute('aria-pressed', String(rosterSelected.has(nick)));
     row.onclick = () => {
+      const restoreFocus = document.activeElement === row;
       if (rosterSelected.has(nick)) rosterSelected.delete(nick);
       else rosterSelected.add(nick);
       renderRosterScreen();
+      if (restoreFocus) list.children[roster.indexOf(nick)].focus({preventScroll:true});
     };
     list.appendChild(row);
   });
@@ -731,7 +738,9 @@ let chosenHoles = 9;
 function setHoles(n) { chosenHoles = n; updateHolePills(); }
 function updateHolePills() {
   document.getElementById('h9').classList.toggle('on', chosenHoles === 9);
+  document.getElementById('h9').setAttribute('aria-pressed', String(chosenHoles === 9));
   document.getElementById('h18').classList.toggle('on', chosenHoles === 18);
+  document.getElementById('h18').setAttribute('aria-pressed', String(chosenHoles === 18));
 }
 
 // ============ DÉMARRAGE ============
@@ -840,7 +849,7 @@ function showHand() {
     const c = hand[handCursor];
     trapsHtml = `
       <div class="hand-stage">
-        <button class="hand-nav" onclick="handNav(-1)" ${handCursor <= 0 ? 'disabled' : ''}>‹</button>
+        <button class="hand-nav" aria-label="Carte précédente" onclick="handNav(-1)" ${handCursor <= 0 ? 'disabled' : ''}>‹</button>
         <div class="hand-card-wrap" id="hand-card-wrap">
           <div class="hand-big-card ${c.t}">
             <div class="t">${T_LABEL[c.t]}</div>
@@ -848,7 +857,7 @@ function showHand() {
             <div class="e">${c.e}</div>
           </div>
         </div>
-        <button class="hand-nav" onclick="handNav(1)" ${handCursor >= hand.length - 1 ? 'disabled' : ''}>›</button>
+        <button class="hand-nav" aria-label="Carte suivante" onclick="handNav(1)" ${handCursor >= hand.length - 1 ? 'disabled' : ''}>›</button>
       </div>
       <div class="hand-dots">
         ${hand.map((_, idx) => `<span class="dot ${idx === handCursor ? 'active' : ''}"></span>`).join('')}
@@ -897,8 +906,13 @@ function handNav(delta) {
   const hand = state.hands[i];
   const next = handCursor + delta;
   if (next < 0 || next > hand.length - 1) return;
+  const restoreFocus = document.activeElement?.classList.contains('hand-nav');
   handCursor = next;
   showHand();
+  if (restoreFocus) {
+    const nav = document.querySelector(delta > 0 ? '.hand-nav[aria-label="Carte suivante"]' : '.hand-nav[aria-label="Carte précédente"]');
+    (nav && !nav.disabled ? nav : document.querySelector('.hand-nav:not(:disabled)'))?.focus({preventScroll:true});
+  }
 }
 
 function backToHub() {

@@ -27,7 +27,7 @@ for(const type of ['ATT','CHA']) {
  // Recommencer uniquement si aucune carte chaos n'a été distribuée dans cette partie.
  if(!found){await page.evaluate(()=>{state.hands[0][0]=state.deck.find(c=>c.t==='CHA')});found={i:0,j:0};}
  await page.locator('.player-tile').nth(found.i).click();await page.getByRole('button',{name:'VOIR MA MAIN'}).click();
- for(let j=0;j<found.j;j++) await page.getByRole('button',{name:'›',exact:true}).click();
+ for(let j=0;j<found.j;j++) await page.getByRole('button',{name:'Carte suivante',exact:true}).click();
  const before=await page.evaluate(()=>state.discard.length);await page.getByRole('button',{name:'Jouer ce piège'}).click();
  if(type==='ATT') {assert.equal(await page.locator('.victim-btn').count(),3);await page.locator('.victim-btn').first().click();}
  assert.equal(await page.evaluate(()=>state.discard.length),before+1);
