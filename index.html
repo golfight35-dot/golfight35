@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#111014">
+<title>Golfight</title>
+<style>
+  :root{
+    --felt-1:#000000;
+    --felt-2:#15121a;
+    --felt-3:#2b2030;
+    --cream:#F5F2E4;
+    --ink-soft:rgba(245,242,228,.6);
+    --gold:#FF1F8E;
+    --gold-deep:#D1146F;
+    --att-1:#E0115F;
+    --att-2:#FF5A2E;
+    --cha-1:#7B2FF7;
+    --cha-2:#D926C9;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--cream);
+    overflow: hidden;
+    user-select: none;
+  }
+  body{
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 38px, rgba(0,0,0,0.03) 38px, rgba(0,0,0,0.03) 76px),
+      radial-gradient(circle at 50% -8%, rgba(255,255,255,.06), transparent 55%),
+      var(--felt-1);
+  }
+  #app {
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    padding-top: env(safe-area-inset-top, 20px);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  .screen { display: none; flex-direction: column; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .screen.active { display: flex; }
+
+  .spacer{ flex:1; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    background: var(--gold);
+    color: var(--felt-1);
+    border: none;
+    padding: 18px 24px;
+    font-size: 18px;
+    font-weight: 800;
+    border-radius: 14px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 12px;
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); background: var(--gold-deep); }
+  .btn.secondary { background: rgba(255,255,255,0.12); color: var(--cream); }
+  .btn.hidden { display: none; }
+  .btn-link{
+    display:block;
+    width:100%;
+    background:transparent;
+    border:none;
+    color: var(--ink-soft);
+    font-size:14px;
+    font-weight:700;
+    padding:10px;
+    text-align:center;
+    cursor:pointer;
+  }
+  .btn-link:active{ color: var(--cream); }
+  .btn-link.hidden{ display:none; }
+
+  .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .input-row input {
+    flex: 1;
+    padding: 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.2);
+    color: var(--cream);
+    outline: none;
+  }
+  .input-row input:focus { border-color: var(--gold); }
+
+  /* ---------- roster ---------- */
+  .roster-row{
+    display:flex; align-items:center; gap:12px;
+    width:100%; text-align:left;
+    background: rgba(255,255,255,.06);
+    border: 2px solid rgba(255,255,255,.1);
+    border-radius:14px;
+    padding:15px 16px;
+    margin-bottom:10px;
+    color: var(--cream);
+    font-size:16.5px;
+    font-weight:700;
+  }
+  .roster-row.checked{ background: rgba(255,31,142,.14); border-color: var(--gold); }
+  .roster-row:active{ transform: scale(.99); }
+  .roster-check{ font-size:19px; }
+  .add-nick-row{ display:flex; gap:8px; margin-top:8px; }
+  .add-nick-row input{
+    flex:1; padding:14px; border-radius:12px;
+    border:2px solid rgba(255,255,255,.15);
+    background: rgba(0,0,0,.2); color: var(--cream); font-size:15px; outline:none;
+  }
+  .add-nick-row input:focus{ border-color: var(--gold); }
+  .add-nick-row .add-nick-btn{ width:auto; padding:14px 16px; margin-bottom:0; white-space:nowrap; }
+
+  /* ---------- bonus ---------- */
+  .section-label{
+    font-size:12px; font-weight:800; letter-spacing:1.5px;
+    opacity:.65; margin: 18px 0 8px;
+  }
+  .section-label:first-child{ margin-top:4px; }
+  .BONUS{ background: linear-gradient(135deg, var(--gold), #2FBF5B); color: var(--felt-1); }
+  .bonus-tile{ margin-top:18px; border-radius:16px; padding:16px; text-align:center; }
+  .bonus-tile.available{ background: linear-gradient(135deg, var(--gold), #2FBF5B); color: var(--felt-1); }
+  .bonus-tile.used{
+    background: rgba(255,255,255,.05); color: var(--ink-soft);
+    font-weight:800; font-size:13px; padding:16px; letter-spacing:.5px;
+  }
+  .bonus-name{ font-size:18px; font-weight:900; margin:6px 0 4px; }
+  .bonus-effect{ font-size:13px; line-height:1.4; margin-bottom:12px; }
+  .bonus-btn{ background: rgba(12,47,29,.85) !important; color: var(--cream) !important; }
+
+  h2 { font-size: 22px; font-weight: 800; margin-bottom: 18px; text-align: center; line-height: 1.2; }
+
+  /* ---------- home ---------- */
+  .home-header{ text-align:center; padding-top:6px; }
+  .brand-compact{ font-size:28px; font-weight:900; letter-spacing:-0.5px; }
+  .brand-compact .accent{ color: var(--gold); }
+  .tagline-small{ font-size:12.5px; opacity:.7; font-style:italic; margin-top:4px; }
+
+  .card-fan{ position:relative; height:186px; margin: 22px 0; }
+  .fan-card{
+    position:absolute; top:0; left:50%;
+    width:116px; aspect-ratio:2/3;
+    border-radius:14px; padding:12px 10px;
+    box-shadow:0 14px 30px rgba(0,0,0,.45);
+    color:#fff;
+  }
+  .fan-card.c1{ transform: translateX(-50%) translateX(-62px) rotate(-11deg); z-index:1; }
+  .fan-card.c2{ transform: translateX(-50%) translateX(0) translateY(-8px) rotate(0deg); z-index:3; }
+  .fan-card.c3{ transform: translateX(-50%) translateX(62px) rotate(11deg); z-index:2; }
+  .fc-cat{ font-size:9px; font-weight:800; letter-spacing:1.5px; opacity:.85; }
+  .fc-name{ font-size:14px; font-weight:800; margin-top:8px; line-height:1.2; }
+
+  .hook{ text-align:center; font-size:19px; font-weight:800; padding: 0 10px; }
+
+  .deck-note{ text-align:center; font-size:12.5px; opacity:.65; margin-top:4px; }
+  .deck-note b{ color: var(--gold); font-weight:800; }
+
+  /* ---------- category colors, shared ---------- */
+  .ATT { background: linear-gradient(135deg, var(--att-1), var(--att-2)); }
+  .CHA { background: linear-gradient(135deg, var(--cha-1), var(--cha-2)); }
+
+  /* ---------- hub / tiles ---------- */
+  #hole-badge-hub{
+    text-align:center;
+    font-size:32px;
+    font-weight:900;
+    letter-spacing:-0.5px;
+    margin-bottom:18px;
+  }
+  #players-list{
+    display:grid;
+    grid-template-columns: repeat(2,1fr);
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .player-tile{
+    background: var(--felt-2);
+    border:2px solid var(--felt-3);
+    border-radius:18px;
+    padding:20px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition: transform .1s;
+  }
+  .player-tile:active{ transform: scale(.96); }
+  .player-tile:not(.done){
+    animation: pulseTile 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseTile{
+    0%,100%{ box-shadow:0 0 0 0 rgba(255,31,142,.28); }
+    50%{ box-shadow:0 0 0 9px rgba(255,31,142,0); }
+  }
+  .player-tile.done{
+    background: rgba(0,0,0,.28);
+    border-color: rgba(255,255,255,.06);
+    opacity:.5;
+    cursor:default;
+    animation:none;
+  }
+  .tile-avatar{
+    width:52px; height:52px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:21px; font-weight:900;
+    color: var(--felt-1);
+    margin:0 auto 8px;
+  }
+  .tile-name{ font-size:16px; font-weight:800; }
+  .tile-status{ font-size:11px; opacity:.65; margin-top:3px; text-transform:uppercase; letter-spacing:.5px; }
+
+  .hole-actions { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+
+  /* ---------- pass ---------- */
+  .pass-name { font-size: 34px; font-weight: 900; color: var(--gold); text-align: center; margin: 18px 0; }
+  .hole-badge {
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+
+  /* ---------- hand : grosse carte navigable ---------- */
+  .hand-stage{ display:flex; align-items:center; gap:10px; margin-top:12px; }
+  .hand-nav{
+    flex-shrink:0;
+    width:44px; height:44px;
+    border-radius:50%;
+    border:none;
+    background: rgba(255,255,255,.08);
+    color: var(--cream);
+    font-size:22px;
+    font-weight:800;
+  }
+  .hand-nav:active:not(:disabled){ background: rgba(255,255,255,.18); }
+  .hand-nav:disabled{ opacity:.2; }
+  .hand-card-wrap{ flex:1; touch-action: pan-y; }
+  .hand-big-card{
+    border-radius:20px;
+    padding:26px 20px;
+    min-height:190px;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 14px 34px rgba(0,0,0,.4);
+    color:#fff;
+  }
+  .hand-big-card .t{ font-size:11px; font-weight:800; letter-spacing:2px; opacity:.85; margin-bottom:10px; }
+  .hand-big-card .n{ font-size:22px; font-weight:900; line-height:1.15; margin-bottom:10px; }
+  .hand-big-card .e{ font-size:14.5px; line-height:1.4; opacity:.95; margin-top:auto; }
+  .hand-dots{ display:flex; justify-content:center; gap:8px; margin:16px 0 14px; }
+  .hand-dots .dot{ width:8px; height:8px; border-radius:50%; background: rgba(255,255,255,.25); transition: all .2s; }
+  .hand-dots .dot.active{ background: var(--gold); width:20px; border-radius:5px; }
+  .hand-hint{ text-align:center; font-size:12px; opacity:.55; margin-top:10px; }
+
+  .empty-hand {
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 20px;
+    font-size: 16px;
+  }
+
+  /* ---------- victim picker ---------- */
+  .victim-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+  .victim-btn {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.16);
+    color: var(--cream);
+    padding: 20px;
+    font-size: 19px;
+    font-weight: 700;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .victim-btn:active { transform: scale(0.97); background: rgba(255,31,142,0.16); }
+
+  /* ---------- reveal (attack + chaos) ---------- */
+  .trap-announce{ text-align:center; padding: 10px 8px 0; }
+  .trap-announce .beat1{
+    display:block;
+    font-size:25px;
+    font-weight:900;
+    animation: popin .4s ease-out both;
+  }
+  .trap-announce .beat1 .demon{ font-size:28px; }
+  .trap-announce .beat2{
+    display:block;
+    margin-top:8px;
+    font-size:15px;
+    opacity:.82;
+    animation: popin .4s ease-out both;
+    animation-delay:.16s;
+  }
+  .trap-announce .beat2 b{ color: var(--gold); }
+  @keyframes popin{
+    from{ opacity:0; transform:translateY(10px) scale(.92); }
+    to{ opacity:1; transform:none; }
+  }
+
+  .trap-card-wrap{ display:flex; justify-content:center; margin-top:26px; }
+  .reveal-face{
+    width:min(280px, 82vw);
+    border-radius:22px;
+    padding:26px 22px;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+    color:#fff;
+    opacity:0;
+    animation: cardflip .55s cubic-bezier(.2,.8,.3,1) both;
+    animation-delay:.42s;
+  }
+  @keyframes cardflip{
+    0%{ opacity:0; transform:perspective(700px) rotateY(-85deg) scale(.85); }
+    65%{ opacity:1; transform:perspective(700px) rotateY(12deg) scale(1.02); }
+    100%{ opacity:1; transform:perspective(700px) rotateY(0) scale(1); }
+  }
+  .trap-card-cat{ font-size:11px; font-weight:800; letter-spacing:2px; opacity:.85; margin-bottom:10px; }
+  .trap-card{ font-size:23px; font-weight:900; line-height:1.15; margin-bottom:10px; }
+  .trap-effect{ font-size:15px; line-height:1.4; opacity:.95; }
+  .played-by{ text-align:center; font-size:13px; opacity:.6; margin-top:16px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .trap-announce .beat1, .trap-announce .beat2, .reveal-face{
+      animation:none !important; opacity:1 !important; transform:none !important;
+    }
+  }
+
+  /* ---------- toast ---------- */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ---------- end ---------- */
+  .end-slogan{ text-align:center; font-size:14px; opacity:.75; font-style:italic; margin-top:8px; }
+  .logo{ display:block; width:min(80vw,300px); margin:0 auto; }
+  .holes-row{ display:flex; gap:10px; margin:8px 0 12px; }
+  .pill{ flex:1; padding:14px; border-radius:999px; border:2px solid rgba(255,255,255,.18); background:transparent; color:var(--cream); font-size:16px; font-weight:800; }
+  .pill.on{ background:var(--gold); border-color:var(--gold); color:var(--felt-1); }
+
+  /* Lisibilité et zones tactiles sur le terrain. */
+  #app { padding-top: max(20px, env(safe-area-inset-top)); padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  button { touch-action: manipulation; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--cream); outline-offset: 3px; }
+  .btn-link, .hand-nav { min-height: 44px; }
+  .btn-link { color: var(--cream); }
+  .roster-name, .tile-name, .pass-name { overflow-wrap: anywhere; }
+  .storage-warning { padding: 10px; background: #6a1834; color: #fff; font-size: 14px; flex-shrink: 0; }
+  .storage-warning.hidden { display: none; }
+</style>
+<link rel="stylesheet" href="assets/visual-pilot.css">
+<link rel="stylesheet" href="assets/lot1.css">
+</head>
+<body>
+<div id="app">
+  <p id="storage-warning" class="storage-warning hidden" role="alert"></p>
+
+  <!-- ACCUEIL -->
+  <div class="screen active" id="screen-home">
+    <div class="home-masthead"><span>CLUBHOUSE UNDERGROUND</span><span class="club-mark" aria-hidden="true">GF / 01</span></div>
+    <header class="home-header">
+      <p class="home-edition">GOLF ENTRE POTES · COUPS BAS DEPUIS TOUJOURS</p>
+      <h1 class="wordmark">GOLF<span>IGHT</span></h1>
+      <p class="home-slogan">Le golf entre potes.<br><span>Avec des coups bas.</span></p>
+    </header>
+
+    <div class="card-fan" aria-hidden="true">
+      <div class="fan-card c1"><div class="fc-cat">ATTAQUE <span><svg class="pilot-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></span></div><div class="fan-symbol"><svg viewBox="0 0 100 100" fill="none" aria-hidden="true" focusable="false"><path d="M25 20 76 79M75 20 24 79" stroke="currentColor" stroke-width="7" stroke-linecap="square"/><path d="m21 16-9 9 9 13 12-8M79 16l9 9-9 13-12-8" fill="currentColor"/><circle cx="50" cy="80" r="5" fill="currentColor"/></svg></div><div class="fc-name">Grip<br>inversé</div><div class="fc-bottom">FAIS-LE DOUTER. <span>♠</span></div></div>
+      <div class="fan-card c2"><div class="fc-cat">CHAOS <span>ϟ</span></div><div class="fan-symbol"><svg viewBox="0 0 100 100" fill="currentColor" aria-hidden="true" focusable="false"><path d="M57 8 18 57h28l-5 35 41-54H54z"/></svg></div><div class="fc-name">Même club<br>pour tous</div><div class="fc-bottom">PERSONNE À L’ABRI. <span>♣</span></div></div>
+      <div class="fan-card c3"><div class="fc-cat">BONUS <span>✦</span></div><div class="fan-symbol"><svg viewBox="0 0 100 100" fill="none" aria-hidden="true" focusable="false"><path d="M35 80V19l39 12-39 15" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/><ellipse cx="48" cy="81" rx="26" ry="5" stroke="currentColor" stroke-width="4"/></svg></div><div class="fc-name">Mulligan</div><div class="fc-bottom">ÇA RESTE ENTRE NOUS. <span>♦</span></div></div>
+    </div>
+
+    <p class="hook">Beau parcours.<br><span>Mauvaises intentions.</span></p>
+    <div class="home-actions">
+      <button class="btn" onclick="goPlayers()">🔥 JOUER<span aria-hidden="true"><svg class="pilot-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></span></button>
+      <button class="btn-link hidden" onclick="resumeGame()" id="resume-btn">Reprendre la partie</button>
+      <p class="deck-note"><b>32</b> cartes pour chambrer. Zéro score à gérer.</p>
+    </div>
+    <footer class="home-footer"><span>GOLFIGHT — LE CLUB</span><span aria-hidden="true">✦</span><span>FAIR-PLAY, OU PRESQUE.</span></footer>
+  </div>
+
+  <!-- JOUEURS -->
+  <div class="screen" id="screen-players">
+    <div class="lot-header"><span>GOLFIGHT</span><span>LA TEAM</span></div>
+    <h2>Qui joue aujourd'hui ?</h2>
+    <div id="roster-list"></div>
+    <div class="add-nick-row">
+      <input type="text" aria-label="Nouveau surnom" id="new-nick-input" placeholder="Nouveau surnom" maxlength="14">
+      <button class="btn secondary add-nick-btn" onclick="addRosterPlayer()">+ Ajouter</button>
+    </div>
+    <div class="holes-row">
+      <button class="pill" id="h9" onclick="setHoles(9)">9 trous</button>
+      <button class="pill" id="h18" onclick="setHoles(18)">18 trous</button>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn" id="players-go-btn" onclick="startGame()">JOUER</button>
+  </div>
+
+  <!-- ÉCRAN CENTRAL — TROU X / 9 -->
+  <div class="screen" id="screen-hub">
+    <div class="lot-header"><span>GOLFIGHT</span><span>SUR LE PARCOURS</span></div>
+    <div id="hole-badge-hub">Trou 1 / 9</div>
+    <div id="players-list"></div>
+    <div class="hole-actions">
+      <button class="btn" onclick="nextHole()" id="next-hole-btn">TROU SUIVANT</button>
+      <button class="btn-link" onclick="endGame(true)">Terminer la partie</button>
+    </div>
+  </div>
+
+  <!-- PASS -->
+  <div class="screen" id="screen-pass">
+    <div class="lot-header"><span>GOLFIGHT</span><span>MAIN PRIVÉE</span></div>
+    <div class="spacer"></div>
+    <p style="text-align:center;font-size:14px;opacity:0.7;letter-spacing:1px;">PASSE LE TÉLÉPHONE À</p>
+    <p class="pass-name" id="pass-name">—</p>
+    <p style="text-align:center;font-size:13px;opacity:0.6;margin-bottom:20px;">Les autres ne regardent pas</p>
+    <div class="spacer"></div>
+    <button class="btn" onclick="showHand()">VOIR MA MAIN</button>
+    <button class="btn-link" onclick="backToHub()">Retour</button>
+  </div>
+
+  <!-- MAIN PRIVÉE -->
+  <div class="screen" id="screen-hand">
+    <div class="lot-header"><span>GOLFIGHT</span><span>MAIN PRIVÉE</span></div>
+    <div class="hole-badge" id="hole-badge-hand">Trou 1 / 9</div>
+    <h2 id="hand-title">Ta main</h2>
+    <div id="hand-area"></div>
+    <div class="hole-actions">
+      <button class="btn-link" onclick="backToHub()">FERMER SANS JOUER</button>
+    </div>
+  </div>
+
+  <!-- VICTIME -->
+  <div class="screen" id="screen-victim">
+    <div class="lot-header"><span>GOLFIGHT</span><span>CHOISIR LA CIBLE</span></div>
+    <div class="hole-badge" id="hole-badge-victim">Trou 1 / 9</div>
+    <p class="target-context" id="victim-attacker"></p>
+    <h2>Qui va trinquer ?</h2>
+    <div class="victim-list" id="victim-list"></div>
+    <div class="spacer"></div>
+    <button class="btn-link" onclick="backToHand()">Retour</button>
+  </div>
+
+  <!-- PIÈGE : pilote visuel, résolution inchangée -->
+  <div class="screen" id="screen-trap">
+    <div class="attack-masthead"><span>GOLFIGHT</span><span>LES COUPS BAS</span></div>
+    <div class="trap-announce" id="trap-announce"></div>
+    <div class="trap-card-wrap">
+      <div class="reveal-face" id="trap-card-face">
+        <div class="attack-topline"><div class="trap-card-cat" id="trap-card-cat"></div><span aria-hidden="true"><svg class="pilot-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></span></div>
+        <div class="attack-emblem" aria-hidden="true"><svg viewBox="0 0 100 100" fill="none" aria-hidden="true" focusable="false"><path d="M25 20 76 79M75 20 24 79" stroke="currentColor" stroke-width="7" stroke-linecap="square"/><path d="m21 16-9 9 9 13 12-8M79 16l9 9-9 13-12-8" fill="currentColor"/><circle cx="50" cy="80" r="5" fill="currentColor"/></svg></div>
+        <p class="trap-card" id="trap-card-name"></p>
+        <div class="attack-rule"><span class="effect-label">LE COUP BAS</span><p class="trap-effect" id="trap-card-effect"></p></div>
+        <div class="attack-card-footer" aria-hidden="true"><span>GOLFIGHT / ATTAQUE</span><span>♠</span></div>
+      </div>
+    </div>
+    <div class="attack-actions"><button class="btn" onclick="confirmPlay()">OK<span aria-hidden="true"><svg class="pilot-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></span></button><p>C’est dit. À vous de jouer.</p></div>
+  </div>
+
+  <!-- Annonce partagée : chaos ou bonus, même reprise et confirmation. -->
+  <div class="screen" id="screen-played">
+    <div class="attack-masthead"><span>GOLFIGHT</span><span>À VOUS DE JOUER</span></div>
+    <div class="trap-announce" id="played-announce"></div>
+    <div class="trap-card-wrap">
+      <div class="reveal-face" id="played-card-face">
+        <div class="attack-topline"><div class="trap-card-cat" id="played-card-cat"></div><span aria-hidden="true">✦</span></div>
+        <div class="attack-emblem" aria-hidden="true"><svg viewBox="0 0 100 100" fill="currentColor" focusable="false"><path d="M57 8 18 57h28l-5 35 41-54H54z"/></svg></div>
+        <p class="trap-card" id="played-card-name"></p>
+        <div class="attack-rule"><span class="effect-label">L’EFFET</span><p class="trap-effect" id="played-card-effect"></p></div>
+        <div class="attack-card-footer" aria-hidden="true"><span>GOLFIGHT</span><span>✦</span></div>
+      </div>
+    </div>
+    <div class="attack-actions"><button class="btn" onclick="confirmPlay()">OK</button><p>C’est dit. À vous de jouer.</p></div>
+  </div>
+
+  <div class="screen" id="screen-end">
+    <div class="lot-header"><span>GOLFIGHT</span><span>ON REMET ÇA ?</span></div>
+    <div class="spacer"></div>
+    <h2 class="end-title">PARTIE<br>TERMINÉE.</h2>
+    <p class="end-slogan">Les cartes sont rangées.<br>Pas les dossiers.</p>
+    <div class="spacer"></div>
+    <button class="btn" onclick="location.reload()">🔥 REJOUER</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ============ DECK ============
+// t: "ATT" (cible un joueur) ou "CHA" (tout le groupe)
+const DECK_BASE = [
+  // ATTAQUE
+  { n: "Grip inversé", t: "ATT", e: "Prochain coup avec les mains inversées." },
+  { n: "Grip inversé", t: "ATT", e: "Prochain coup avec les mains inversées." },
+  { n: "Grip inversé", t: "ATT", e: "Prochain coup avec les mains inversées." },
+  { n: "Club imposé", t: "ATT", e: "L'attaquant choisit ton club pour le prochain coup." },
+  { n: "Club imposé", t: "ATT", e: "L'attaquant choisit ton club pour le prochain coup." },
+  { n: "Club imposé", t: "ATT", e: "L'attaquant choisit ton club pour le prochain coup." },
+  { n: "Pieds joints", t: "ATT", e: "Prochain coup joué pieds joints." },
+  { n: "Pieds joints", t: "ATT", e: "Prochain coup joué pieds joints." },
+  { n: "Sans coup d'essai", t: "ATT", e: "Prochain coup sans practice swing." },
+  { n: "Sans coup d'essai", t: "ATT", e: "Prochain coup sans practice swing." },
+  { n: "Pas de driver", t: "ATT", e: "Driver interdit sur ce trou." },
+  { n: "Pas de driver", t: "ATT", e: "Driver interdit sur ce trou." },
+  { n: "Putter interdit", t: "ATT", e: "Prochain putt avec un autre club." },
+  { n: "Putter interdit", t: "ATT", e: "Prochain putt avec un autre club." },
+  { n: "Fer uniquement", t: "ATT", e: "Aucun bois ni hybride sur ce trou." },
+  { n: "Fer uniquement", t: "ATT", e: "Aucun bois ni hybride sur ce trou." },
+  { n: "Mauvais outil", t: "ATT", e: "Sortie de bunker avec un fer, pas de wedge." },
+  { n: "Mauvais outil", t: "ATT", e: "Sortie de bunker avec un fer, pas de wedge." },
+  { n: "Une main", t: "ATT", e: "Prochain petit coup ou putt joué uniquement avec la main non dominante." },
+  { n: "Une main", t: "ATT", e: "Prochain petit coup ou putt joué uniquement avec la main non dominante." },
+  { n: "Grip bas", t: "ATT", e: "Mains très basses sur le grip pour le prochain coup." },
+  { n: "Grip bas", t: "ATT", e: "Mains très basses sur le grip pour le prochain coup." },
+  { n: "Putter avec driver", t: "ATT", e: "Prochain putt avec un driver." },
+  { n: "Putter avec driver", t: "ATT", e: "Prochain putt avec un driver." },
+  { n: "Wedge interdit", t: "ATT", e: "Prochain coup autour du green sans wedge." },
+  { n: "Wedge interdit", t: "ATT", e: "Prochain coup autour du green sans wedge." },
+  // CHAOS
+  { n: "Même club pour tous", t: "CHA", e: "Tout le monde joue le prochain coup avec le même club." },
+  { n: "Sans driver pour tous", t: "CHA", e: "Personne ne sort le driver sur ce trou." },
+  { n: "Grip inversé pour tous", t: "CHA", e: "Prochain coup de chacun, mains inversées." },
+  { n: "Pieds joints pour tous", t: "CHA", e: "Tout le monde joue pieds joints jusqu'à la fin du trou." },
+  { n: "Putter interdit pour tous", t: "CHA", e: "Tout le monde finit au green sans putter." },
+  { n: "Télémètre interdit pour tous", t: "CHA", e: "Aucune aide de distance sur ce trou pour personne." }
+];
+
+const T_LABEL = { ATT: "ATTAQUE", CHA: "CHAOS" };
+function totalHoles() { return (state && state.totalHoles) || 9; }
+const STORAGE_KEY = "golfight_v1";
+const ROSTER_KEY = "golfight_roster_v1";
+const DEFAULT_ROSTER = ["Captain", "Sniper", "Le Kid", "Nitro", "Lady", "X Factor", "Foxy", "Fyzio"];
+
+// Bonus : une carte à part des pièges, 1 par joueur, secrète, jouable uniquement sur soi, une fois sur 9 trous.
+const BONUS_DECK = [
+  { n: "Mulligan", e: "Rejoue immédiatement ton dernier coup." },
+  { n: "Deuxième putt", e: "Rejoue un putt raté." },
+  { n: "Deuxième chance au départ", e: "Rejoue ton départ." },
+  { n: "Free drop", e: "Déplace ta balle d'une longueur de club, sans te rapprocher du trou." },
+  { n: "Recommence", e: "Rejoue ton dernier coup et garde le meilleur des deux." }
+];
+
+// initiale d'affichage : ignore les articles ("Le Kid" -> K), sinon 1ère lettre du surnom
+function getInitial(name) {
+  const stripped = name.trim().replace(/^(le|la|les)\s+|^l['’]/i, '');
+  const base = stripped || name.trim();
+  return (base.charAt(0) || '?').toUpperCase();
+}
+
+// ============ ÉTAT ============
+let state = null;
+let roster = [];
+let rosterSelected = new Set();
+const AVATAR_COLORS = ['#FF1F8E', '#2FBF5B', '#F5F2E4', '#FF7A1A'];
+let handCursor = 0; // position dans la main affichée (vue seulement, pas une règle du jeu)
+
+// ============ NAVIGATION ============
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const screen = document.getElementById(id);
+  screen.classList.add('active');
+  screen.scrollTop = 0;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// Les surnoms restent du texte dans toutes les vues.
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function storageWarning(message) {
+  const warning = document.getElementById('storage-warning');
+  warning.textContent = message;
+  warning.classList.remove('hidden');
+}
+function validCard(card) {
+  return card && DECK_BASE.some(c => c.n === card.n && c.t === card.t && c.e === card.e);
+}
+function validState(s) {
+  if (!s || !Array.isArray(s.players) || s.players.length < 2 || s.players.length * 3 > DECK_BASE.length ||
+      !s.players.every(n => typeof n === 'string' && n.trim()) || new Set(s.players).size !== s.players.length ||
+      ![9,18].includes(s.totalHoles || 9) || !Number.isInteger(s.hole) || s.hole < 1 || s.hole > (s.totalHoles || 9) ||
+      !Array.isArray(s.deck) || !s.deck.every(validCard) || !Array.isArray(s.discard) || !s.discard.every(validCard) ||
+      !s.hands || !s.bonuses) return false;
+  return s.players.every((_,i) => {
+    const hand = s.hands[i], bonus = s.bonuses[i];
+    return Array.isArray(hand) && hand.length <= 3 && hand.every(validCard) && bonus &&
+      typeof bonus.used === 'boolean' && bonus.card && BONUS_DECK.some(c => c.n === bonus.card.n && c.e === bonus.card.e);
+  });
+}
+// ============ SAUVEGARDE ============
+function save() {
+  if (!state) return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    document.getElementById('storage-warning').classList.add('hidden');
+  } catch(e) { storageWarning("Sauvegarde indisponible : garde cette page ouverte pour conserver la partie."); }
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (!validState(saved)) throw new Error('Sauvegarde invalide');
+    return saved;
+  } catch(e) {
+    storageWarning("Impossible de reprendre la sauvegarde. Elle est conservée ; tu peux lancer une nouvelle partie.");
+    return null;
+  }
+}
+function clearSave() {
+  try { localStorage.removeItem(STORAGE_KEY); }
+  catch(e) { storageWarning("Impossible d'effacer la sauvegarde : une ancienne partie peut encore apparaître à la réouverture."); }
+}
+
+// ============ ROSTER (liste de surnoms, persistante entre les parties) ============
+function loadRoster() {
+  try {
+    const raw = localStorage.getItem(ROSTER_KEY);
+    if (raw) {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list) && list.length && list.every(n => typeof n === 'string' && n.trim())) return [...new Set(list)];
+    }
+  } catch(e) {}
+  const seeded = [...DEFAULT_ROSTER];
+  saveRoster(seeded);
+  return seeded;
+}
+function saveRoster(list) {
+  try { localStorage.setItem(ROSTER_KEY, JSON.stringify(list)); }
+  catch(e) { storageWarning("Les surnoms ne peuvent pas être enregistrés sur ce navigateur."); }
+}
+
+// Confidentialité de la vue seulement : aucune écriture de sauvegarde.
+function maskPrivateView() {
+  if (!state || state.viewingPlayer === null) return;
+  if (!['screen-hand', 'screen-victim'].some(id => document.getElementById(id).classList.contains('active'))) return;
+  state.pending = null;
+  openPass(state.viewingPlayer);
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) maskPrivateView(); });
+window.addEventListener('pagehide', maskPrivateView);
+window.addEventListener('pageshow', event => { if (event.persisted) maskPrivateView(); });
+
+// ============ ACCUEIL ============
+window.addEventListener('DOMContentLoaded', () => {
+  const s = load();
+  if (s && s.players && s.players.length) {
+    document.getElementById('resume-btn').classList.remove('hidden');
+  }
+});
+
+function resumeGame() {
+  const s = load();
+  if (!s) { toast("Pas de partie sauvegardée"); return; }
+  state = s;
+  state.pending = null;
+  state.viewingPlayer = null;
+  if (validAnnouncement(state.announcement)) { renderAnnouncement(state.announcement); return; }
+  renderHub();
+  show('screen-hub');
+}
+
+// ============ JOUEURS (roster de surnoms) ============
+function goPlayers() {
+  roster = loadRoster();
+  rosterSelected = new Set();
+  renderRosterScreen();
+  show('screen-players');
+}
+
+function renderRosterScreen() {
+  const list = document.getElementById('roster-list');
+  list.innerHTML = '';
+  roster.forEach(nick => {
+    const row = document.createElement('button');
+    row.className = 'roster-row' + (rosterSelected.has(nick) ? ' checked' : '');
+    row.innerHTML = `
+      <span class="roster-check">${rosterSelected.has(nick) ? '☑' : '☐'}</span>
+      <span class="roster-name">${escapeHTML(nick)}</span>
+    `;
+    row.setAttribute('aria-pressed', String(rosterSelected.has(nick)));
+    row.onclick = () => {
+      const restoreFocus = document.activeElement === row;
+      if (rosterSelected.has(nick)) rosterSelected.delete(nick);
+      else rosterSelected.add(nick);
+      renderRosterScreen();
+      if (restoreFocus) list.children[roster.indexOf(nick)].focus({preventScroll:true});
+    };
+    list.appendChild(row);
+  });
+  const n = rosterSelected.size;
+  document.getElementById('players-go-btn').textContent = n > 0 ? `JOUER À ${n}` : 'JOUER';
+  updateHolePills();
+}
+
+function addRosterPlayer() {
+  const input = document.getElementById('new-nick-input');
+  const v = input.value.trim();
+  if (!v) return;
+  const existing = roster.find(n => n.toLowerCase() === v.toLowerCase());
+  if (!existing) {
+    roster.push(v);
+    saveRoster(roster);
+  }
+  rosterSelected.add(existing || v);
+  input.value = '';
+  renderRosterScreen();
+}
+
+let chosenHoles = 9;
+function setHoles(n) { chosenHoles = n; updateHolePills(); }
+function updateHolePills() {
+  document.getElementById('h9').classList.toggle('on', chosenHoles === 9);
+  document.getElementById('h9').setAttribute('aria-pressed', String(chosenHoles === 9));
+  document.getElementById('h18').classList.toggle('on', chosenHoles === 18);
+  document.getElementById('h18').setAttribute('aria-pressed', String(chosenHoles === 18));
+}
+
+// ============ DÉMARRAGE ============
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  const names = Array.from(rosterSelected);
+  if (names.length < 2) { toast("Il faut au moins 2 joueurs"); return; }
+
+  if (names.length * 3 > DECK_BASE.length) { toast("Le paquet ne suffit pas : 10 joueurs maximum pour recevoir 3 pièges chacun."); return; }
+  let hasSave = false;
+  try { hasSave = !!localStorage.getItem(STORAGE_KEY); } catch(e) {}
+  if (hasSave && !window.confirm("Remplacer la partie sauvegardée par une nouvelle partie ?")) return;
+  state = {
+    players: names,
+    hole: 1,
+    totalHoles: chosenHoles,
+    deck: shuffle(DECK_BASE),
+    discard: [],
+    hands: {},            // { playerIndex: [cards] } — 3 pièges pour toute la partie, jamais repioché
+    bonuses: {},           // { playerIndex: { card, used } } — à part des pièges, 1 fois sur 9 trous, sur soi uniquement
+    pending: null,        // { playerIndex, cardIndex, card }
+    viewingPlayer: null   // joueur dont on consulte la main
+  };
+
+  const bonusOrder = shuffle(BONUS_DECK);
+  state.players.forEach((_, i) => {
+    state.hands[i] = [];
+    state.bonuses[i] = { card: bonusOrder[i % bonusOrder.length], used: false };
+  });
+  dealInitialHands();
+
+  save();
+  renderHub();
+  show('screen-hub');
+}
+
+function dealInitialHands() {
+  state.players.forEach((_, i) => {
+    while (state.hands[i].length < 3) {
+      if (state.deck.length === 0) break; // pas de repioche dans Golfight — le deck de départ suffit
+      state.hands[i].push(state.deck.pop());
+    }
+  });
+}
+
+// ============ ÉCRAN CENTRAL ============
+function renderHub() {
+  document.getElementById('hole-badge-hub').textContent = `Trou ${state.hole} / ${totalHoles()}`;
+
+  const list = document.getElementById('players-list');
+  list.innerHTML = '';
+  state.players.forEach((name, i) => {
+    const trapCount = state.hands[i].length;
+    const bonus = state.bonuses[i];
+    const nothingLeft = trapCount === 0 && (!bonus || bonus.used);
+    const initial = getInitial(name);
+    const avatarColor = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const tile = document.createElement('button');
+    tile.type = 'button';
+    tile.className = 'player-tile' + (nothingLeft ? ' done' : '');
+    tile.innerHTML = `
+      <div class="tile-avatar" style="background:${avatarColor}">${escapeHTML(initial)}</div>
+      <div class="tile-name">${escapeHTML(name)}</div>
+      <div class="tile-status">${trapCount} piège${trapCount === 1 ? '' : 's'} · Bonus ${bonus && bonus.used ? 'utilisé' : 'disponible'}</div>
+    `;
+    tile.onclick = () => openPass(i);
+    list.appendChild(tile);
+  });
+
+  // Bouton "Trou suivant" toujours visible — le groupe décide quand le trou est fini
+  document.getElementById('next-hole-btn').style.display = 'block';
+  document.getElementById('next-hole-btn').textContent = state.hole === totalHoles() ? 'TERMINER LA PARTIE' : 'TROU SUIVANT';
+
+  save();
+}
+
+// ============ PASS ============
+function openPass(playerIndex) {
+  state.viewingPlayer = playerIndex;
+  handCursor = 0;
+  document.getElementById('pass-name').textContent = state.players[playerIndex];
+  show('screen-pass');
+}
+
+function showHand() {
+  const i = state.viewingPlayer;
+  const hand = state.hands[i];
+  const bonus = state.bonuses[i];
+  document.getElementById('hole-badge-hand').textContent = `Trou ${state.hole} / ${totalHoles()}`;
+  document.getElementById('hand-title').textContent = state.players[i];
+
+  let trapsHtml;
+  if (hand.length === 0) {
+    trapsHtml = `<div class="empty-hand">Tous tes pièges sont joués.</div>`;
+  } else {
+    if (handCursor >= hand.length) handCursor = hand.length - 1;
+    if (handCursor < 0) handCursor = 0;
+    const c = hand[handCursor];
+    trapsHtml = `
+      <div class="hand-stage">
+        <button class="hand-nav" aria-label="Carte précédente" onclick="handNav(-1)" ${handCursor <= 0 ? 'disabled' : ''}>‹</button>
+        <div class="hand-card-wrap" id="hand-card-wrap">
+          <div class="hand-big-card ${c.t}">
+            <div class="t">${T_LABEL[c.t]}</div>
+            <div class="n">${c.n}</div>
+            <div class="e">${c.e}</div>
+          </div>
+        </div>
+        <button class="hand-nav" aria-label="Carte suivante" onclick="handNav(1)" ${handCursor >= hand.length - 1 ? 'disabled' : ''}>›</button>
+      </div>
+      <div class="hand-dots">
+        ${hand.map((_, idx) => `<span class="dot ${idx === handCursor ? 'active' : ''}"></span>`).join('')}
+      </div>
+      <button class="btn" onclick="chooseCard(${handCursor})">Jouer ce piège</button>
+      <p class="hand-hint">Glisse ou utilise les flèches pour parcourir tes pièges.</p>
+    `;
+  }
+
+  let bonusHtml = '';
+  if (bonus) {
+    bonusHtml = bonus.used
+      ? `<div class="section-label">MON BONUS</div><div class="bonus-tile used">UTILISÉ ✓</div>`
+      : `<div class="section-label">MON BONUS</div>
+         <div class="bonus-tile available">
+           <div class="bonus-name">${bonus.card.n}</div>
+           <div class="bonus-effect">${bonus.card.e}</div>
+           <button class="btn bonus-btn" onclick="chooseBonus()">Utiliser mon Bonus</button>
+         </div>`;
+  }
+
+  document.getElementById('hand-area').innerHTML = `
+    <div class="section-label">MES PIÈGES · ${hand.length} restant${hand.length === 1 ? '' : 's'}</div>
+    ${trapsHtml}
+    ${bonusHtml}
+  `;
+  if (hand.length > 0) attachSwipe(document.getElementById('hand-card-wrap'));
+  show('screen-hand');
+}
+
+let handTouchX = null;
+function attachSwipe(el) {
+  if (!el) return;
+  el.addEventListener('touchstart', e => { handTouchX = e.touches[0].clientX; }, { passive: true });
+  el.addEventListener('touchend', e => {
+    if (handTouchX === null) return;
+    const dx = e.changedTouches[0].clientX - handTouchX;
+    handTouchX = null;
+    if (Math.abs(dx) < 40) return;
+    handNav(dx < 0 ? 1 : -1);
+  }, { passive: true });
+}
+
+function handNav(delta) {
+  const i = state.viewingPlayer;
+  const hand = state.hands[i];
+  const next = handCursor + delta;
+  if (next < 0 || next > hand.length - 1) return;
+  const restoreFocus = document.activeElement?.classList.contains('hand-nav');
+  handCursor = next;
+  showHand();
+  if (restoreFocus) {
+    const nav = document.querySelector(delta > 0 ? '.hand-nav[aria-label="Carte suivante"]' : '.hand-nav[aria-label="Carte précédente"]');
+    (nav && !nav.disabled ? nav : document.querySelector('.hand-nav:not(:disabled)'))?.focus({preventScroll:true});
+  }
+}
+
+function backToHub() {
+  state.viewingPlayer = null;
+  state.pending = null;
+  renderHub();
+  show('screen-hub');
+}
+
+// ============ CHOIX CARTE ============
+function chooseCard(cardIndex) {
+  const i = state.viewingPlayer;
+  const card = state.hands[i][cardIndex];
+  state.pending = { playerIndex: i, cardIndex, card };
+
+  if (card.t === "ATT") {
+    // choisir la victime
+    const list = document.getElementById('victim-list');
+    list.innerHTML = '';
+    state.players.forEach((name, j) => {
+      if (j === i) return;
+      const btn = document.createElement('button');
+      btn.className = 'victim-btn';
+      btn.textContent = name;
+      btn.onclick = () => resolvePlay(j);
+      list.appendChild(btn);
+    });
+    document.getElementById('victim-attacker').textContent = `${state.players[i]} joue « ${card.n} »`;
+    document.getElementById('hole-badge-victim').textContent = `Trou ${state.hole} / ${totalHoles()}`;
+    show('screen-victim');
+  } else {
+    resolvePlay(null);
+  }
+}
+
+function backToHand() {
+  state.pending = null;
+  showHand();
+}
+
+// Optional announcement field: old saves without it remain valid.
+function validAnnouncement(a) {
+  if (!a || !Number.isInteger(a.playerIndex) || !state.players[a.playerIndex] || !a.card) return false;
+  if (a.kind === 'BONUS') {
+    const bonus = state.bonuses[a.playerIndex];
+    return bonus.used && bonus.card.n === a.card.n && bonus.card.e === a.card.e;
+  }
+  if (!validCard(a.card) || a.kind !== a.card.t || !state.discard.some(c => c.n === a.card.n && c.e === a.card.e)) return false;
+  return a.kind === 'CHA' || (a.kind === 'ATT' && Number.isInteger(a.victimIndex) && a.victimIndex !== a.playerIndex && !!state.players[a.victimIndex]);
+}
+function renderAnnouncement(a) {
+  const attacker = escapeHTML(state.players[a.playerIndex].toUpperCase());
+  const attack = a.kind === 'ATT';
+  const prefix = attack ? 'trap' : 'played';
+  document.getElementById(prefix + '-announce').innerHTML = attack
+    ? `<span class="beat1">${attacker} A FRAPPÉ <span class="demon">😈</span></span><span class="beat2">vise <b>${escapeHTML(state.players[a.victimIndex].toUpperCase())}</b></span>`
+    : a.kind === 'BONUS'
+      ? `<span class="beat1">${attacker} UTILISE SON BONUS ✨</span>`
+      : `<span class="beat1">⚡ CHAOS POUR TOUS</span><span class="beat2">déclenché par <b>${attacker}</b></span>`;
+  document.getElementById(prefix + '-card-face').className = 'reveal-face ' + a.kind;
+  document.getElementById(prefix + '-card-cat').textContent = a.kind === 'BONUS' ? 'BONUS' : T_LABEL[a.kind];
+  document.getElementById(prefix + '-card-name').textContent = a.card.n;
+  document.getElementById(prefix + '-card-effect').textContent = a.card.e;
+  show(attack ? 'screen-trap' : 'screen-played');
+}
+function chooseBonus() {
+  const i = state.viewingPlayer;
+  const bonus = state.bonuses[i];
+  if (!bonus || bonus.used) return;
+  bonus.used = true;
+  state.announcement = { kind: 'BONUS', playerIndex: i, victimIndex: null, card: {...bonus.card} };
+  save();
+  renderAnnouncement(state.announcement);
+}
+function resolvePlay(victimIndex) {
+  const pending = state.pending;
+  if (!pending) return;
+  const {playerIndex, cardIndex, card} = pending;
+  state.hands[playerIndex].splice(cardIndex, 1);
+  state.discard.push(card);
+  state.pending = null;
+  state.announcement = { kind: card.t, playerIndex, victimIndex, card: {...card} };
+  save();
+  renderAnnouncement(state.announcement);
+}
+
+function confirmPlay() {
+  state.announcement = null;
+  state.pending = null;
+  state.viewingPlayer = null;
+  renderHub();
+  show('screen-hub');
+}
+
+// ============ TROU SUIVANT ============
+function nextHole() {
+  if (state.hole >= totalHoles()) {
+    endGame();
+    return;
+  }
+  state.hole++;
+  save();
+  renderHub();
+  show('screen-hub');
+}
+
+// ============ FIN ============
+function endGame(askConfirmation = false) {
+  if (askConfirmation && !window.confirm("Terminer la partie et effacer sa sauvegarde ?")) return;
+  clearSave();
+  state = null;
+  document.getElementById('resume-btn').classList.add('hidden');
+  show('screen-end');
+}
+</script>
+</body>
+</html>

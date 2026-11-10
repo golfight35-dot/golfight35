@@ -1,0 +1,73 @@
+/* Lot 1 only. No target picker, played announcement or end-screen styling. */
+:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end) {
+  --lot-bg:#111014; --lot-text:#F5F2E4; --lot-pink:#FF2994;
+  --lot-border:#554b58; --lot-muted:#c4bec6;
+  color:var(--lot-text); gap:0;
+}
+body:has(:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end).active) { background:#111014; }
+.lot-header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 0 12px; margin-bottom:18px; border-bottom:1px solid var(--lot-border); flex-shrink:0; }
+.lot-header span:first-child { font-family:'Barlow Condensed',Impact,sans-serif; font-size:24px; font-weight:800; letter-spacing:-.3px; }
+.lot-header span:last-child { font-size:10px; font-weight:800; letter-spacing:1px; text-align:right; color:var(--lot-muted); }
+:is(#screen-players,#screen-hand,#screen-victim) h2 { font-family:'Barlow Condensed',Impact,sans-serif; text-align:left; text-transform:uppercase; font-size:32px; line-height:1.05; margin-bottom:16px; overflow-wrap:anywhere; }
+:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end) .btn {
+  background:var(--lot-pink); color:#111014; min-height:60px;
+  border-radius:6px; padding:16px 18px; font-size:18px;
+  box-shadow:3px 3px 0 var(--lot-text); width:calc(100% - 3px);
+}
+:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end) .btn:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--lot-text); background:#ff64b0; }
+:is(#screen-players,#screen-hub,#screen-pass,#screen-hand,#screen-victim,#screen-end) .btn-link { color:var(--lot-text); min-height:48px; font-size:14px; }
+#screen-players .roster-row { min-height:58px; padding:13px 14px; border:1px solid var(--lot-border); border-radius:6px; background:#1b191f; margin-bottom:8px; font-size:18px; }
+#screen-players .roster-row.checked { background:#372030; border:2px solid var(--lot-pink); padding:12px 13px; }
+#screen-players .roster-check { color:var(--lot-pink); flex-shrink:0; }
+#screen-players .roster-name { overflow-wrap:anywhere; }
+#screen-players .add-nick-row { margin:10px 0 12px; gap:8px; }
+#screen-players .add-nick-row input { border:1px solid var(--lot-border); border-radius:6px; background:#1b191f; min-height:52px; }
+#screen-players .add-nick-btn { background:#F5F2E4; color:#111014; min-height:52px; width:auto; box-shadow:none; font-size:16px; }
+#screen-players .holes-row { margin:0 0 20px; }
+#screen-players .pill { border:1px solid var(--lot-border); border-radius:6px; min-height:52px; }
+#screen-players .pill.on { background:var(--lot-text); border-color:var(--lot-text); color:#111014; }
+#screen-players #players-go-btn { position:sticky; bottom:3px; flex-shrink:0; margin-top:8px; z-index:2; }
+#screen-hub #hole-badge-hub { font-family:'Barlow Condensed',Impact,sans-serif; text-align:left; font-size:42px; line-height:1; margin:0 0 22px; }
+#screen-hub #players-list { gap:10px; }
+#screen-hub .player-tile { text-align:left; padding:16px 12px; border:1px solid var(--lot-border); border-radius:8px; background:#1b191f; animation:none; }
+#screen-hub .tile-avatar { margin:0 0 14px; width:40px; height:40px; font-size:19px; }
+#screen-hub .tile-name { font-family:'Barlow Condensed',Impact,sans-serif; font-size:27px; line-height:1.05; margin-bottom:7px; }
+#screen-hub .tile-status { font-size:12px; line-height:1.5; letter-spacing:0; text-transform:none; opacity:1; color:var(--lot-muted); }
+#screen-hub .player-tile.done { opacity:1; background:#111014; border-style:dashed; }
+#screen-pass .pass-name { font-family:'Barlow Condensed',Impact,sans-serif; font-size:50px; line-height:1; margin:18px 0; color:var(--lot-pink); overflow-wrap:anywhere; }
+#screen-hand .hole-badge { text-align:left; font-size:12px; color:var(--lot-muted); opacity:1; margin-bottom:8px; }
+#screen-hand .section-label { opacity:1; color:var(--lot-muted); font-size:11px; margin:18px 0 10px; }
+#screen-hand .hand-stage { gap:8px; align-items:center; }
+#screen-hand .hand-nav { border:1px solid var(--lot-border); background:#242028; width:44px; height:48px; border-radius:6px; }
+#screen-hand .hand-nav:disabled { opacity:1; color:#8e8792; border-color:#39333e; background:#19171d; }
+#screen-hand .hand-big-card { border-radius:10px; border:1px solid #f5f2e460; padding:16px 12px; min-height:218px; box-shadow:none; }
+#screen-hand .hand-big-card.ATT { background:#E82C64; color:#08070A; }
+#screen-hand .hand-big-card.CHA { background:#722FE3; color:#F5F2E4; }
+#screen-hand .hand-big-card .t { font-size:10px; letter-spacing:1px; margin-bottom:16px; }
+#screen-hand .hand-big-card .n { font-family:'Barlow Condensed',Impact,sans-serif; font-size:29px; line-height:1; margin-bottom:16px; text-transform:uppercase; }
+#screen-hand .hand-big-card .e { font-size:17px; font-weight:600; line-height:1.45; padding:12px; margin-top:auto; }
+#screen-hand .hand-dots .dot.active { background:var(--lot-pink); }
+#screen-hand .hand-hint { opacity:1; color:var(--lot-muted); line-height:1.4; }
+#screen-hand .bonus-tile { border-radius:8px; margin-top:0; padding:16px; }
+#screen-hand .bonus-tile.available { background:#D6F46A; color:#111014; }
+#screen-hand .bonus-name { font-size:19px; text-align:left; }
+#screen-hand .bonus-effect { font-size:16px; text-align:left; line-height:1.45; }
+#screen-hand .bonus-btn { background:#111014 !important; color:#F5F2E4 !important; box-shadow:none; margin-bottom:0; font-size:16px; width:100%; }
+#screen-hand .bonus-tile.used { opacity:1; color:var(--lot-muted); border:1px dashed var(--lot-border); }
+#screen-hand .hole-actions { position:sticky; bottom:0; background:#111014; padding:8px 0 0; z-index:2; }
+@media(max-width:350px) {
+  #screen-hand .hand-stage { gap:6px; }
+  #screen-hand .hand-big-card { padding:14px 10px; }
+  #screen-hand .hand-big-card .n { font-size:26px; }
+}
+#screen-players, #screen-hand { scroll-padding-bottom:84px; }
+
+/* Remaining navigation screens reuse the same header, actions and palette. */
+#screen-victim .hole-badge { text-align:left; opacity:1; color:var(--lot-muted); }
+.target-context { color:var(--lot-muted); font-size:16px; line-height:1.45; margin-bottom:16px; overflow-wrap:anywhere; }
+#screen-victim .victim-list { gap:10px; }
+#screen-victim .victim-btn { min-height:60px; background:#1b191f; border:1px solid var(--lot-border); border-radius:6px; text-align:left; font-size:21px; padding:18px; overflow-wrap:anywhere; }
+#screen-victim .victim-btn:active { background:#372030; border-color:var(--lot-pink); }
+#screen-victim .btn-link { margin-top:20px; }
+#screen-end .end-title { font-family:'Barlow Condensed',Impact,sans-serif; font-size:clamp(36px,12vw,52px); text-align:left; line-height:1; margin-bottom:20px; }
+#screen-end .end-slogan { text-align:left; font-size:18px; font-style:normal; line-height:1.5; opacity:1; color:var(--lot-muted); }
