@@ -1,0 +1,187 @@
+/* GOLFIGHT 2.1 — pilotes accueil / attaque uniquement. */
+@font-face {
+  font-family: 'Barlow Condensed';
+  src: url('fonts/barlow-condensed-800.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+#screen-home, #screen-trap {
+  --visual-bg: #111014;
+  --visual-text: #F5F2E4;
+  --visual-accent: #FF2994;
+  --visual-attack: #E82C64;
+  --visual-chaos: #722FE3;
+  --visual-bonus: #D6F46A;
+  --display-font: 'Barlow Condensed', Impact, 'Arial Narrow', sans-serif;
+  color: var(--visual-text);
+  flex-shrink: 1;
+  min-height: 0;
+}
+body:has(#screen-home.active), body:has(#screen-trap.active) {
+  background: #111014;
+}
+#screen-home { gap: 0; }
+.home-masthead, .attack-masthead, .home-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.home-masthead { padding: 1px 0 13px; border-bottom: 1px solid #51474f; }
+.club-mark { color: var(--visual-bonus); }
+#screen-home .home-header { padding-top: 25px; }
+.home-edition { font-size: 9px; letter-spacing: 1.05px; font-weight: 700; color: #c4bec6; }
+.wordmark {
+  position: relative;
+  display: inline-block;
+  font-family: var(--display-font);
+  font-weight: 800;
+  font-size: clamp(68px, 21.3vw, 94px);
+  line-height: .95;
+  letter-spacing: -2px;
+  margin: 12px 0 15px;
+  transform: rotate(-3deg);
+}
+.wordmark span { color: var(--visual-accent); }
+.wordmark i { font: 700 12px Arial, sans-serif; position: absolute; right: -12px; top: 4px; }
+.home-slogan { font-size: 18px; line-height: 1.35; font-weight: 800; letter-spacing: -.4px; }
+.home-slogan span { color: var(--visual-bonus); }
+#screen-home .card-fan { height: 247px; min-height: 247px; margin: 28px 0 0; isolation: isolate; }
+#screen-home .fan-card {
+  top: 20px;
+  width: 134px;
+  height: 193px;
+  aspect-ratio: auto;
+  padding: 13px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(245,242,228,.45);
+  border-radius: 10px;
+  box-shadow: 0 12px 18px #0006;
+  color: #111014;
+}
+#screen-home .fan-card.c1 { background: var(--visual-attack); transform: translateX(calc(-50% - 65px)) translateY(12px) rotate(-17deg); z-index: 1; }
+#screen-home .fan-card.c2 { background: var(--visual-chaos); color: var(--visual-text); transform: translateX(-50%) rotate(-2deg); z-index: 3; }
+#screen-home .fan-card.c3 { background: var(--visual-bonus); transform: translateX(calc(-50% + 65px)) translateY(13px) rotate(17deg); z-index: 2; }
+#screen-home .fc-cat { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 1px; opacity: 1; border-bottom: 1px solid currentColor; padding-bottom: 7px; }
+.fan-symbol { height: 53px; margin-top: 7px; }
+.fan-symbol svg { display: block; width: 53px; height: 53px; margin: auto; }
+#screen-home .fc-name { font-family: var(--display-font); text-transform: uppercase; font-size: 27px; line-height: .95; margin-top: 7px; }
+.fc-bottom { margin-top: auto; font-size: 6px; font-weight: 800; letter-spacing: .2px; display: flex; justify-content: space-between; align-items: center; }
+.fc-bottom span { font-size: 18px; }
+#screen-home .hook { font-family: var(--display-font); text-transform: uppercase; font-size: 30px; line-height: 1; text-align: left; padding: 0; margin: 0 0 24px; }
+#screen-home .hook span { color: var(--visual-accent); }
+.home-actions { margin-top: auto; padding-top: 4px; }
+#screen-home .btn, #screen-trap .btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--visual-accent);
+  color: #111014;
+  border-radius: 6px;
+  min-height: 60px;
+  padding: 16px 20px;
+  font-size: 19px;
+  letter-spacing: .2px;
+  margin-bottom: 0;
+  box-shadow: 3px 3px 0 var(--visual-text);
+}
+#screen-home .btn:active, #screen-trap .btn:active { background: #ff64b0; transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--visual-text); }
+#screen-home .btn span, #screen-trap .btn span { font-size: 27px; line-height: 1; }
+#screen-home .btn-link { min-height: 48px; color: var(--visual-text); text-decoration: underline; text-underline-offset: 4px; margin-top: 6px; }
+#screen-home .btn-link.hidden { display: none; }
+#screen-home .deck-note { margin: 14px 0 19px; font-size: 11px; opacity: 1; color: #c4bec6; }
+#screen-home .deck-note b { color: var(--visual-text); }
+.home-footer { font-size: 8px; letter-spacing: .6px; padding: 13px 0 2px; border-top: 1px solid #51474f; gap: 8px; }
+.home-footer > span:nth-child(2) { color: var(--visual-accent); font-size: 15px; }
+/* Carte d'attaque — une carte réellement jouée, jamais le reste de la main. */
+.attack-masthead { padding: 0 0 16px; border-bottom: 1px solid #51474f; }
+.attack-masthead > span:first-child { font-family: var(--display-font); font-size: 21px; letter-spacing: .5px; }
+.attack-masthead > span:last-child { color: #c4bec6; font-size: 9px; }
+#screen-trap .trap-announce { padding: 25px 0 0; text-align: left; }
+#screen-trap .beat1 { font-family: var(--display-font); font-size: 29px; line-height: 1.1; animation: none; overflow-wrap: anywhere; }
+#screen-trap .beat1 .demon { font-size: 23px; }
+#screen-trap .beat2 { font-size: 16px; margin-top: 7px; opacity: 1; animation: none; overflow-wrap: anywhere; }
+#screen-trap .beat2 b { color: var(--visual-bonus); }
+#screen-trap .trap-card-wrap { margin-top: 25px; margin-bottom: 24px; padding: 0 5px; }
+#screen-trap .reveal-face {
+  width: 100%;
+  max-width: 360px;
+  color: #111014;
+  background: var(--visual-attack);
+  border-radius: 12px;
+  border: 1px solid #f5f2e47a;
+  padding: 17px 19px 12px;
+  box-shadow: 5px 6px 0 #f5f2e4;
+  opacity: 1;
+  animation: pilot-deal 220ms ease-out both;
+  animation-delay: 0s;
+}
+.attack-topline { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #11101480; padding-bottom: 12px; }
+#screen-trap .trap-card-cat { margin: 0; font-size: 12px; letter-spacing: 2px; opacity: 1; }
+.attack-topline > span { font-size: 24px; line-height: 1; }
+.attack-emblem { display: grid; place-items: center; margin: 14px auto 9px; width: 100px; height: 100px; border: 1px solid #11101480; border-radius: 50%; }
+.attack-emblem svg { width: 82px; height: 82px; }
+#screen-trap .trap-card { font-family: var(--display-font); font-size: 45px; text-transform: uppercase; line-height: 1; margin: 12px 0 18px; overflow-wrap: anywhere; }
+.attack-rule { background: var(--visual-text); border-radius: 4px; padding: 14px; }
+.effect-label { display: block; font-size: 9px; font-weight: 800; letter-spacing: 1px; margin-bottom: 7px; }
+#screen-trap .trap-effect { font-size: 17px; font-weight: 600; line-height: 1.45; opacity: 1; }
+.attack-card-footer { display: flex; align-items: center; justify-content: space-between; font-size: 8px; font-weight: 800; letter-spacing: 1px; padding-top: 9px; }
+.attack-card-footer > span:last-child { font-size: 21px; }
+.attack-actions { margin-top: auto; padding: 0 2px 3px 0; }
+.attack-actions p { text-align: center; color: #c4bec6; font-size: 12px; margin: 13px 0 0; }
+@keyframes pilot-deal { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+@media (max-width: 350px) {
+  .home-edition { font-size: 8px; letter-spacing: .55px; }
+  #screen-home .home-header { padding-top: 20px; }
+  #screen-home .card-fan { height: 224px; min-height: 224px; margin-top: 22px; }
+  #screen-home .fan-card { width: 118px; height: 175px; padding: 11px 10px 8px; }
+  #screen-home .fan-card.c1 { transform: translateX(calc(-50% - 54px)) translateY(12px) rotate(-15deg); }
+  #screen-home .fan-card.c3 { transform: translateX(calc(-50% + 54px)) translateY(13px) rotate(15deg); }
+  #screen-home .fc-name { font-size: 24px; }
+  .fan-symbol { height: 44px; } .fan-symbol svg { width: 44px; height: 44px; }
+  #screen-home .hook { font-size: 28px; }
+  .home-footer { font-size: 7px; letter-spacing: .3px; }
+  #screen-trap .trap-card { font-size: 39px; }
+  .attack-emblem { width: 84px; height: 84px; } .attack-emblem svg { width: 66px; height: 66px; }
+}
+@media (max-height: 700px) {
+  #screen-home .home-header { padding-top: 16px; }
+  .wordmark { font-size: 65px; margin: 8px 0 11px; }
+  .home-slogan { font-size: 16px; }
+  #screen-home .card-fan { height: 188px; min-height: 188px; margin-top: 13px; }
+  #screen-home .fan-card { width: 110px; height: 158px; top: 9px; }
+  #screen-home .fc-name { font-size: 22px; }
+  #screen-home .fan-symbol { height: 35px; } #screen-home .fan-symbol svg { width: 35px; height: 35px; }
+  #screen-home .hook { font-size: 25px; margin-bottom: 16px; }
+  #screen-home .deck-note { margin: 12px 0; font-size: 10px; }
+  .home-footer { padding-top: 8px; }
+  #screen-trap .trap-announce { padding-top: 16px; }
+  #screen-trap .trap-card-wrap { margin-top: 18px; margin-bottom: 20px; }
+  .attack-emblem { width: 64px; height: 64px; margin-top: 11px; } .attack-emblem svg { width: 52px; height: 52px; }
+  #screen-trap .trap-card { font-size: 34px; margin: 10px 0 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  #screen-trap .reveal-face { opacity: 1; transform: none; }
+}
+.pilot-arrow { display: block; width: 22px; height: 22px; }
+.fc-cat .pilot-arrow { width: 12px; height: 12px; }
+@media (max-height: 700px) {
+  .attack-masthead { padding-bottom: 12px; }
+  #screen-trap .trap-announce { padding-top: 12px; }
+  #screen-trap .trap-card-wrap { margin-top: 14px; margin-bottom: 16px; }
+  #screen-trap .attack-rule { padding: 12px; }
+  #screen-trap .reveal-face { padding-top: 13px; }
+}
+@media (max-height: 600px) {
+  .home-footer { display: none; }
+}
+/* Encre renforcée : #111014 sur #E82C64 atteint seulement 4,49:1. */
+#screen-home .fan-card.c1, #screen-trap .reveal-face { color: #08070A; }
+@media (max-height: 600px) {
+  .attack-actions p { display: none; }
+}

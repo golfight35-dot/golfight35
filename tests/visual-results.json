@@ -1,0 +1,56 @@
+[
+  {
+    "test": "Texte / fond",
+    "ratio": 16.88,
+    "status": "PASS"
+  },
+  {
+    "test": "Bouton rose / texte sombre",
+    "ratio": 5.41,
+    "status": "PASS"
+  },
+  {
+    "test": "Attaque corail / texte sombre",
+    "ratio": 4.76,
+    "status": "PASS"
+  },
+  {
+    "test": "Chaos violet / texte clair",
+    "ratio": 5.79,
+    "status": "PASS"
+  },
+  {
+    "test": "Bonus citron / texte sombre",
+    "ratio": 15.35,
+    "status": "PASS"
+  },
+  {
+    "test": "Texte secondaire / fond",
+    "ratio": 10.4,
+    "status": "PASS"
+  },
+  {
+    "test": "320px : main masquée avant ouverture et après fermeture, sauvegarde inchangée",
+    "status": "PASS"
+  },
+  {
+    "test": "320px : accueil et 3 attaques dont effet long, sans débordement, confirmation tactile et clavier",
+    "status": "PASS"
+  },
+  {
+    "test": "320px : animation 220ms, mouvement réduit sans animation, aucune erreur JS",
+    "status": "PASS"
+  },
+  {
+    "test": "390px : main masquée avant ouverture et après fermeture, sauvegarde inchangée",
+    "status": "PASS"
+  },
+  {
+    "test": "390px : accueil et 3 attaques dont effet long, sans débordement, confirmation tactile et clavier",
+    "status": "PASS"
+  },
+  {
+    "test": "390px : animation 220ms, mouvement réduit sans animation, aucune erreur JS",
+    "status": "PASS"
+  }
+]
