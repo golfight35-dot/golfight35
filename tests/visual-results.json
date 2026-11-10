@@ -30,6 +30,10 @@
     "status": "PASS"
   },
   {
+    "test": "320px : écusson original chargé et visible, action entièrement visible, aucun chevauchement de l'éventail",
+    "status": "PASS"
+  },
+  {
     "test": "320px : main masquée avant ouverture et après fermeture, sauvegarde inchangée",
     "status": "PASS"
   },
@@ -39,6 +43,10 @@
   },
   {
     "test": "320px : animation 220ms, mouvement réduit sans animation, aucune erreur JS",
+    "status": "PASS"
+  },
+  {
+    "test": "390px : écusson original chargé et visible, action entièrement visible, aucun chevauchement de l'éventail",
     "status": "PASS"
   },
   {

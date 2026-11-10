@@ -14,7 +14,14 @@ const context=await browser.newContext({viewport:{width,height},isMobile:true,ha
 await page.goto(base);await page.evaluate(()=>document.fonts.ready);
 assert(await page.evaluate(()=>document.fonts.check('800 24px "Barlow Condensed"')));
 const bounds=async()=>{assert(await page.evaluate(()=>{const s=document.querySelector('.screen.active');return document.documentElement.scrollWidth<=innerWidth && s.scrollWidth<=s.clientWidth}));};
-await bounds();const play=page.getByRole('button',{name:'🔥 JOUER',exact:true});assert((await play.boundingBox()).height>=44);await play.click();
+await bounds();
+const crest=await page.locator('.club-crest').evaluate(img=>({loaded:img.complete&&img.naturalWidth===640&&img.naturalHeight===616,box:img.getBoundingClientRect().toJSON()}));
+assert(crest.loaded&&crest.box.width>=128&&crest.box.y>=0&&crest.box.bottom<=height);
+const play=page.getByRole('button',{name:'🔥 JOUER',exact:true});const playBox=await play.boundingBox();assert(playBox.height>=44&&playBox.y+playBox.height<=height);
+const fanBottom=await page.locator('.fan-card').evaluateAll(cards=>Math.max(...cards.map(el=>el.getBoundingClientRect().bottom)));assert(fanBottom<playBox.y);
+const hook=page.locator('#screen-home .hook');if(await hook.isVisible())assert(fanBottom<(await hook.boundingBox()).y);
+results.push({test:`${width}px : écusson original chargé et visible, action entièrement visible, aucun chevauchement de l'éventail`,status:'PASS'});
+await play.click();
 for(const name of ['Captain','Sniper','Nitro','Lady'])await page.locator('.roster-row').filter({hasText:name}).click();await page.locator('#players-go-btn').click();
 const saved=await page.evaluate(()=>localStorage.getItem(STORAGE_KEY));
 await page.locator('.player-tile').first().click();assert(await page.locator('#screen-pass').isVisible());assert(!(await page.locator('#screen-hand').isVisible()));

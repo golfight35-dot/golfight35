@@ -185,3 +185,41 @@ body:has(#screen-home.active), body:has(#screen-trap.active) {
 @media (max-height: 600px) {
   .attack-actions p { display: none; }
 }
+/* Revue des pilotes : l'écusson original devient la signature de l'accueil. */
+.home-identity { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 14px 0 16px; }
+.club-crest { display: block; width: 164px; height: auto; flex: 0 0 auto; }
+#screen-home .wordmark { font-size: 66px; line-height: .88; margin: 0; letter-spacing: -1px; text-align: left; }
+#screen-home .wordmark span { display: block; }
+#screen-home .card-fan { height: 247px; min-height: 247px; margin-top: 20px; }
+/* L'effet garde son espace et sa taille ; on réduit d'abord le décor. */
+#screen-trap .trap-effect { font-size: 18px; line-height: 1.45; }
+.attack-emblem { width: 80px; height: 80px; margin: 10px auto 8px; }
+.attack-emblem svg { width: 64px; height: 64px; }
+@media (max-width: 350px) {
+  .home-identity { gap: 16px; margin: 12px 0 14px; }
+  .club-crest { width: 140px; }
+  #screen-home .wordmark { font-size: 55px; }
+}
+@media (max-height: 700px) {
+  #screen-home .home-header { padding-top: 13px; }
+  .home-identity { margin-top: 10px; margin-bottom: 12px; }
+  #screen-home .card-fan { height: 180px; min-height: 180px; margin-top: 13px; }
+  #screen-home .hook { display: none; }
+  .attack-emblem { width: 48px; height: 48px; margin: 8px auto; }
+  .attack-emblem svg { width: 38px; height: 38px; }
+}
+/* L'éventail garde une vraie réserve pour les cartes inclinées. */
+@media (max-height: 700px) {
+  #screen-home .card-fan { height: 180px; min-height: 180px; }
+  #screen-home .fan-card { top: 4px; width: 100px; height: 140px; padding: 8px; }
+  #screen-home .fc-cat { font-size: 8px; padding-bottom: 5px; }
+  #screen-home .fan-symbol { height: 26px; margin-top: 4px; }
+  #screen-home .fan-symbol svg { width: 26px; height: 26px; }
+  #screen-home .fc-name { font-size: 19px; margin-top: 4px; }
+  #screen-home .fc-bottom { font-size: 5px; }
+  #screen-home .fc-bottom span { font-size: 14px; }
+}
+@media (max-height: 600px) {
+  .home-edition { display: none; }
+  .club-crest { width: 128px; }
+}
