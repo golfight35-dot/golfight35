@@ -1,0 +1,18 @@
+{
+  "passed": [
+    "Démarrage 4 joueurs / 9 trous / 3 pièges et 1 bonus chacun",
+    "Reprise après rechargement sans perte",
+    "Bonus consommé une seule fois et conservé après interruption",
+    "ATT : utilisation, protection contre double résolution et reprise",
+    "CHA : utilisation, protection contre double résolution et reprise",
+    "Enchaînement des 9 trous et fin sans sauvegarde résiduelle",
+    "18 trous et annulation de fin anticipée",
+    "Nouvelle partie : annuler préserve la sauvegarde",
+    "Surnom traité comme du texte",
+    "Sauvegarde invalide conservée, signalée sans plantage ; roster invalide récupéré",
+    "Échec du stockage visible, partie encore jouable",
+    "Main et retour utilisables à 320×568, 390×844 et 844×390 sans débordement horizontal",
+    "Aucune erreur JavaScript non interceptée"
+  ],
+  "errors": []
+}
