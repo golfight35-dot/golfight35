@@ -30,7 +30,7 @@
     "status": "PASS"
   },
   {
-    "test": "320px : écusson original chargé et visible, action entièrement visible, aucun chevauchement de l'éventail",
+    "test": "320px : GOLFIGHT en un seul mot et sur une ligne, sans écusson, action entièrement visible, aucun chevauchement de l'éventail",
     "status": "PASS"
   },
   {
@@ -46,7 +46,7 @@
     "status": "PASS"
   },
   {
-    "test": "390px : écusson original chargé et visible, action entièrement visible, aucun chevauchement de l'éventail",
+    "test": "390px : GOLFIGHT en un seul mot et sur une ligne, sans écusson, action entièrement visible, aucun chevauchement de l'éventail",
     "status": "PASS"
   },
   {

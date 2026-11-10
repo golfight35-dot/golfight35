@@ -3,7 +3,7 @@
 Branche `golfight-v2-visual`, créée depuis le commit `0d919d902126902afffaec8a1afe340981d5528e` de `golfight-v2`.
 Aucun déploiement. Aucune généralisation au reste de l'application : validation visuelle attendue.
 
-Révision avec écusson : voir [la revue et les captures finales](REVUE-ECUSSON.md).
+Révision actuelle : [GOLFIGHT en un mot, sans écusson](REVUE-GOLFIGHT.md).
 
 ## Captures comparatives
 
@@ -16,7 +16,7 @@ Même taille de fenêtre, navigateur Chromium, même carte « Grip inversé », 
 
 ## Intégration
 
-Accueil : écusson original du canard boxeur, logo typographique Barlow Condensed en accompagnement, slogan, éventail de trois catégories, action principale rose. Les cartes de l'éventail illustrent des cartes existantes ; elles ne représentent jamais la main d'un joueur.
+Accueil : logo typographique GOLFIGHT en un mot et sur une ligne, slogan, éventail de trois catégories, action principale rose. L’écusson sert uniquement de référence à la charte graphique. Les cartes de l'éventail illustrent des cartes existantes ; elles ne représentent jamais la main d'un joueur.
 
 Attaque : catégorie, pictogramme SVG de clubs croisés, titre condensé, effet en texte de 18 px sur fond blanc cassé et bouton de confirmation de 60 px. Les messages d'attaquant et de cible sont ceux du moteur existant. Le bouton OK conserve son action.
 

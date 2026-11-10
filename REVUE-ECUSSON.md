@@ -1,5 +1,7 @@
 # Revue des pilotes — Écusson original
 
+**Archive : cette proposition a été remplacée. Voir [la révision actuelle sans écusson](REVUE-GOLFIGHT.md).**
+
 Statut : version à revoir, sur `golfight-v2-visual` uniquement. Aucun merge, aucun déploiement, aucune refonte des autres écrans. Le test sur téléphone physique n'a pas été effectué dans cet environnement.
 
 ## Captures finales inspectées
