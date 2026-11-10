@@ -15,12 +15,12 @@ for(const name of ['Captain','Sniper','Nitro','Lady']) await page.locator('.rost
 await page.getByRole('button',{name:'JOUER À 4',exact:true}).click();
 assert.deepEqual(await page.evaluate(()=>Object.values(state.hands).map(h=>h.length)),[3,3,3,3]);
 assert.equal(await page.locator('#hole-badge-hub').textContent(),'Trou 1 / 9');check('Démarrage 4 joueurs / 9 trous / 3 pièges et 1 bonus chacun');
-const original=await page.evaluate(()=>JSON.stringify(state));await page.reload();await page.getByRole('button',{name:'Reprendre la partie'}).click();
+const original=await page.evaluate(()=>JSON.stringify(state));await page.reload();await page.getByRole('button',{name:'Reprendre la partie'}).click();if(await page.locator('#screen-trap.active, #screen-played.active').count())await page.getByRole('button',{name:'OK',exact:true}).click();
 assert.equal(await page.evaluate(()=>JSON.stringify(state)),original);check('Reprise après rechargement sans perte');
 await page.locator('.player-tile').first().click();await page.getByRole('button',{name:'VOIR MA MAIN'}).click();
 await page.screenshot({path:path.join(__dirname,'hand-mobile.png'),fullPage:true});
 await page.getByRole('button',{name:'Utiliser mon Bonus'}).click();assert.equal(await page.evaluate(()=>state.bonuses[0].used),true);
-await page.reload();await page.getByRole('button',{name:'Reprendre la partie'}).click();assert.equal(await page.evaluate(()=>state.bonuses[0].used),true);check('Bonus consommé une seule fois et conservé après interruption');
+await page.reload();await page.getByRole('button',{name:'Reprendre la partie'}).click();if(await page.locator('#screen-trap.active, #screen-played.active').count())await page.getByRole('button',{name:'OK',exact:true}).click();assert.equal(await page.evaluate(()=>state.bonuses[0].used),true);check('Bonus consommé une seule fois et conservé après interruption');
 // La distribution est aléatoire : choisir un détenteur de chaque catégorie sans changer les cartes.
 for(const type of ['ATT','CHA']) {
  let found=await page.evaluate(t=>{for(let i=0;i<state.players.length;i++){const j=state.hands[i].findIndex(c=>c.t===t);if(j>=0)return {i,j};}return null},type);
@@ -32,7 +32,7 @@ for(const type of ['ATT','CHA']) {
  if(type==='ATT') {assert.equal(await page.locator('.victim-btn').count(),3);await page.locator('.victim-btn').first().click();}
  assert.equal(await page.evaluate(()=>state.discard.length),before+1);
  await page.evaluate(()=>resolvePlay(null));assert.equal(await page.evaluate(()=>state.discard.length),before+1);
- await page.reload();await page.getByRole('button',{name:'Reprendre la partie'}).click();assert.equal(await page.evaluate(()=>state.discard.length),before+1);
+ await page.reload();await page.getByRole('button',{name:'Reprendre la partie'}).click();if(await page.locator('#screen-trap.active, #screen-played.active').count())await page.getByRole('button',{name:'OK',exact:true}).click();assert.equal(await page.evaluate(()=>state.discard.length),before+1);
  check(type+' : utilisation, protection contre double résolution et reprise');
 }
 for(let h=1;h<9;h++) await page.locator('#next-hole-btn').click();assert.equal(await page.locator('#next-hole-btn').textContent(),'TERMINER LA PARTIE');

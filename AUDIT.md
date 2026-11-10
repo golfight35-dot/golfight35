@@ -1,5 +1,7 @@
 # Audit contradictoire — avant généralisation
 
+**Historique : P1 et consolidation traités ensuite. Voir [les corrections finales et le statut actuel](CORRECTIONS-FINALES.md).**
+
 **Recommandation : NON PRÊT à généraliser.** L'audit a reproduit une perte d'information lors de la reprise d'une attaque et des défauts de mise en page que les contrôles précédents ne couvraient pas. Des corrections d'interface ont été apportées sur `golfight-v2-visual` uniquement. Aucun merge, déploiement ou changement de production.
 
 ## VALIDÉ — effectivement exécuté

@@ -677,6 +677,7 @@ function resumeGame() {
   state = s;
   state.pending = null;
   state.viewingPlayer = null;
+  if (validAnnouncement(state.announcement)) { renderAnnouncement(state.announcement); return; }
   renderHub();
   show('screen-hub');
 }
@@ -937,65 +938,54 @@ function backToHand() {
   showHand();
 }
 
+// Optional announcement field: old saves without it remain valid.
+function validAnnouncement(a) {
+  if (!a || !Number.isInteger(a.playerIndex) || !state.players[a.playerIndex] || !a.card) return false;
+  if (a.kind === 'BONUS') {
+    const bonus = state.bonuses[a.playerIndex];
+    return bonus.used && bonus.card.n === a.card.n && bonus.card.e === a.card.e;
+  }
+  if (!validCard(a.card) || a.kind !== a.card.t || !state.discard.some(c => c.n === a.card.n && c.e === a.card.e)) return false;
+  return a.kind === 'CHA' || (a.kind === 'ATT' && Number.isInteger(a.victimIndex) && a.victimIndex !== a.playerIndex && !!state.players[a.victimIndex]);
+}
+function renderAnnouncement(a) {
+  const attacker = escapeHTML(state.players[a.playerIndex].toUpperCase());
+  const attack = a.kind === 'ATT';
+  const prefix = attack ? 'trap' : 'played';
+  document.getElementById(prefix + '-announce').innerHTML = attack
+    ? `<span class="beat1">${attacker} A FRAPPÉ <span class="demon">😈</span></span><span class="beat2">vise <b>${escapeHTML(state.players[a.victimIndex].toUpperCase())}</b></span>`
+    : a.kind === 'BONUS'
+      ? `<span class="beat1">${attacker} UTILISE SON BONUS ✨</span>`
+      : `<span class="beat1">⚡ CHAOS POUR TOUS</span><span class="beat2">déclenché par <b>${attacker}</b></span>`;
+  document.getElementById(prefix + '-card-face').className = 'reveal-face ' + a.kind;
+  document.getElementById(prefix + '-card-cat').textContent = a.kind === 'BONUS' ? 'BONUS' : T_LABEL[a.kind];
+  document.getElementById(prefix + '-card-name').textContent = a.card.n;
+  document.getElementById(prefix + '-card-effect').textContent = a.card.e;
+  show(attack ? 'screen-trap' : 'screen-played');
+}
 function chooseBonus() {
   const i = state.viewingPlayer;
   const bonus = state.bonuses[i];
   if (!bonus || bonus.used) return;
   bonus.used = true;
-  document.getElementById('played-announce').innerHTML = `
-    <span class="beat1">${escapeHTML(state.players[i].toUpperCase())} UTILISE SON BONUS ✨</span>
-  `;
-  const face = document.getElementById('played-card-face');
-  face.className = 'reveal-face BONUS';
-  document.getElementById('played-card-cat').textContent = 'BONUS';
-  document.getElementById('played-card-name').textContent = bonus.card.n;
-  document.getElementById('played-card-effect').textContent = bonus.card.e;
-  show('screen-played');
+  state.announcement = { kind: 'BONUS', playerIndex: i, victimIndex: null, card: {...bonus.card} };
   save();
+  renderAnnouncement(state.announcement);
 }
-
-// ============ RÉSOLUTION ============
 function resolvePlay(victimIndex) {
   const pending = state.pending;
   if (!pending) return;
-  const attackerName = state.players[pending.playerIndex];
-  const victimName = victimIndex !== null ? state.players[victimIndex] : null;
-
-  const { playerIndex, cardIndex, card } = pending;
-
-  // retirer le piège de la main — définitivement, pas de repioche
+  const {playerIndex, cardIndex, card} = pending;
   state.hands[playerIndex].splice(cardIndex, 1);
   state.discard.push(card);
-  state.pending = null; // Empêche une seconde consommation du même piège.
-
-  if (card.t === "ATT" && victimName) {
-    document.getElementById('trap-announce').innerHTML = `
-      <span class="beat1">${escapeHTML(attackerName.toUpperCase())} A FRAPPÉ <span class="demon">😈</span></span>
-      <span class="beat2">vise <b>${escapeHTML(victimName.toUpperCase())}</b></span>
-    `;
-    const face = document.getElementById('trap-card-face');
-    face.className = 'reveal-face ' + card.t;
-    document.getElementById('trap-card-cat').textContent = T_LABEL[card.t];
-    document.getElementById('trap-card-name').textContent = card.n;
-    document.getElementById('trap-card-effect').textContent = card.e;
-    show('screen-trap');
-  } else {
-    document.getElementById('played-announce').innerHTML = `
-      <span class="beat1">⚡ CHAOS POUR TOUS</span>
-      <span class="beat2">déclenché par <b>${escapeHTML(attackerName.toUpperCase())}</b></span>
-    `;
-    const face = document.getElementById('played-card-face');
-    face.className = 'reveal-face ' + card.t;
-    document.getElementById('played-card-cat').textContent = T_LABEL[card.t];
-    document.getElementById('played-card-name').textContent = card.n;
-    document.getElementById('played-card-effect').textContent = card.e;
-    show('screen-played');
-  }
-
+  state.pending = null;
+  state.announcement = { kind: card.t, playerIndex, victimIndex, card: {...card} };
   save();
+  renderAnnouncement(state.announcement);
 }
 
 function confirmPlay() {
+  state.announcement = null;
   state.pending = null;
   state.viewingPlayer = null;
   renderHub();
