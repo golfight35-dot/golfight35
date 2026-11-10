@@ -202,3 +202,33 @@ body:has(#screen-home.active), body:has(#screen-trap.active) {
   #screen-home .hook { margin-bottom: 8px; }
   #screen-home .deck-note { margin: 10px 0; }
 }
+/* Audit : corrections de mise en page et de lecture, sans généralisation. */
+.add-nick-row { flex-wrap: wrap; }
+.add-nick-row input { min-width: 0; flex: 1 1 130px; font-size: 16px; }
+.add-nick-row .add-nick-btn { white-space: normal; }
+.player-tile { color: var(--cream); font-family: inherit; }
+.hand-big-card .e { background: var(--cream); color: #111014; opacity: 1; padding: 12px; border-radius: 6px; font-size: 17px; }
+#screen-home .home-header { container-type: inline-size; }
+#screen-home .wordmark { font-size: clamp(32px, 23cqw, 94px); }
+@media (max-height: 700px) {
+  #screen-home .wordmark { font-size: clamp(32px, 23cqw, 65px); }
+}
+#screen-home { container-type: inline-size; }
+.home-masthead { flex-wrap: wrap; gap: 6px; }
+.hand-card-wrap { min-width: 0; }
+.hand-big-card .n, .hand-big-card .e { overflow-wrap: anywhere; }
+@container (max-width: 260px) {
+  #screen-home .fan-card { width: 84px; height: 136px; padding: 8px; }
+  #screen-home .fan-card.c1 { transform: translateX(calc(-50% - 44px)) translateY(12px) rotate(-12deg); }
+  #screen-home .fan-card.c3 { transform: translateX(calc(-50% + 44px)) translateY(12px) rotate(12deg); }
+  #screen-home .fc-cat { font-size: 8px; }
+  #screen-home .fc-name { font-size: 18px; }
+  #screen-home .fan-symbol, #screen-home .fan-symbol svg { height: 28px; }
+  #screen-home .fc-bottom { font-size: 5px; }
+}
+#players-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.player-tile { min-width: 0; }
+.tile-status { overflow-wrap: anywhere; }
+.hand-big-card .t, #screen-played .trap-card-cat { background: var(--cream); color: #111014; opacity: 1; align-self: flex-start; padding: 4px 6px; border-radius: 3px; }
+#screen-played .trap-effect { background: var(--cream); color: #111014; opacity: 1; padding: 12px; border-radius: 6px; font-size: 17px; }
+#screen-played .reveal-face.BONUS { color: #111014; }

@@ -1,0 +1,28 @@
+{
+  "passed": [
+    "2 joueurs / 9 trous : tous bonus et pièges, interruptions, réouverture par import du stockage, progression et fin",
+    "2 joueurs / 18 trous : tous bonus et pièges, interruptions, réouverture par import du stockage, progression et fin",
+    "4 joueurs / 9 trous : tous bonus et pièges, interruptions, réouverture par import du stockage, progression et fin",
+    "4 joueurs / 18 trous : tous bonus et pièges, interruptions, réouverture par import du stockage, progression et fin",
+    "Interruption après résolution : pas de double consommation ; perte de l’annonce reproduite",
+    "Prototype original et format sans totalHoles compatibles ; schéma sans bonus refusé sans effacement",
+    "0/1/10/11 joueurs, Foxy/Fyzio, surnom HTML et doublon insensible à la casse",
+    "Masquage sur pagehide simulé ; navigation réelle aller/retour et rechargement ne révèlent pas la main",
+    "9 écrans : 320×568, zoom de page 100 %, texte 100 %, aucun débordement horizontal",
+    "9 écrans : 390×844, zoom de page 100 %, texte 100 %, aucun débordement horizontal",
+    "9 écrans : 360×800, zoom de page 100 %, texte 100 %, aucun débordement horizontal",
+    "9 écrans : 800×360, zoom de page 100 %, texte 100 %, aucun débordement horizontal",
+    "9 écrans : 360×800, zoom de page 150 %, texte 100 %, aucun débordement horizontal",
+    "9 écrans : 360×800, zoom de page 100 %, texte 150 %, aucun débordement horizontal",
+    "Marges de sécurité simulées 44 px en haut / 34 px en bas : action accessible",
+    "Aucune erreur JavaScript non interceptée"
+  ],
+  "observed": [
+    "P1 : annonce et cible non restaurées après interruption juste après une attaque ; consommation conservée"
+  ],
+  "limits": [
+    "Zoom de page et agrandissement des textes par styles injectés à 150 %, distincts du réglage natif iOS/Android ; marque et illustration décorative exclues de la simulation de texte",
+    "Pagehide simulé, retour arrière réel ; snapshot système non vérifiable",
+    "Réouverture de contexte avec import du stockage persistant, pas redémarrage du système"
+  ]
+}

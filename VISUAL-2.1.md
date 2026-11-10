@@ -1,5 +1,7 @@
 # Golfight 2.1 — Deux écrans pilotes
 
+**Rapport historique des pilotes. État actuel : [audit contradictoire et défauts restants](AUDIT.md).**
+
 Branche `golfight-v2-visual`, créée depuis le commit `0d919d902126902afffaec8a1afe340981d5528e` de `golfight-v2`.
 Aucun déploiement. Aucune généralisation au reste de l'application : validation visuelle attendue.
 

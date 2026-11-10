@@ -573,7 +573,9 @@ let handCursor = 0; // position dans la main affichée (vue seulement, pas une r
 // ============ NAVIGATION ============
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const screen = document.getElementById(id);
+  screen.classList.add('active');
+  screen.scrollTop = 0;
 }
 
 function toast(msg) {
@@ -650,6 +652,17 @@ function saveRoster(list) {
   catch(e) { storageWarning("Les surnoms ne peuvent pas être enregistrés sur ce navigateur."); }
 }
 
+// Confidentialité de la vue seulement : aucune écriture de sauvegarde.
+function maskPrivateView() {
+  if (!state || state.viewingPlayer === null) return;
+  if (!['screen-hand', 'screen-victim'].some(id => document.getElementById(id).classList.contains('active'))) return;
+  state.pending = null;
+  openPass(state.viewingPlayer);
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) maskPrivateView(); });
+window.addEventListener('pagehide', maskPrivateView);
+window.addEventListener('pageshow', event => { if (event.persisted) maskPrivateView(); });
+
 // ============ ACCUEIL ============
 window.addEventListener('DOMContentLoaded', () => {
   const s = load();
@@ -686,6 +699,7 @@ function renderRosterScreen() {
       <span class="roster-check">${rosterSelected.has(nick) ? '☑' : '☐'}</span>
       <span class="roster-name">${escapeHTML(nick)}</span>
     `;
+    row.setAttribute('aria-pressed', String(rosterSelected.has(nick)));
     row.onclick = () => {
       if (rosterSelected.has(nick)) rosterSelected.delete(nick);
       else rosterSelected.add(nick);
@@ -782,7 +796,8 @@ function renderHub() {
     const nothingLeft = trapCount === 0 && (!bonus || bonus.used);
     const initial = getInitial(name);
     const avatarColor = AVATAR_COLORS[i % AVATAR_COLORS.length];
-    const tile = document.createElement('div');
+    const tile = document.createElement('button');
+    tile.type = 'button';
     tile.className = 'player-tile' + (nothingLeft ? ' done' : '');
     tile.innerHTML = `
       <div class="tile-avatar" style="background:${avatarColor}">${escapeHTML(initial)}</div>
